@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" uid="uid://c8ncglqjiyb73" path="res://scenes/components/health_component.tscn" id="2_gmlin"]
 [ext_resource type="Texture2D" uid="uid://iurok8kkhy4o" path="res://assets/models/axe01_matsimple.png" id="2_lvxji"]
 [ext_resource type="PackedScene" uid="uid://cmh6mc1lufhvb" path="res://scenes/components/hitbox_component.tscn" id="3_lvxji"]
+[ext_resource type="Texture2D" uid="uid://oo4ekd06bk0h" path="res://assets/UI-TOUCH-CONTROLS/Extra/Default/icon_arrow_up_light.png" id="5_75vfm"]
+[ext_resource type="Texture2D" uid="uid://dmev8l0r7bqu" path="res://assets/UI-TOUCH-CONTROLS/Extra/Default/icon_arrow_down_light.png" id="6_0owmy"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_tapir"]
 
@@ -195,3 +197,38 @@ scale = Vector2(0.2, 0.2)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tapir")
+
+[node name="TouchControls" type="Control" parent="UI" unique_id=939590879]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VirtualJoystick" type="VirtualJoystick" parent="UI/TouchControls" unique_id=1812870301]
+layout_mode = 0
+offset_left = 237.99998
+offset_top = 377.99997
+offset_right = 278.0
+offset_bottom = 417.99997
+scale = Vector2(2.5, 2.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+joystick_mode = 1
+action_left = &"left"
+action_right = &"right"
+action_up = &"forward"
+action_down = &"backward"
+
+[node name="UpBtn" type="TouchScreenButton" parent="UI/TouchControls" unique_id=327035323]
+position = Vector2(974, 341)
+scale = Vector2(4.2352943, 6.4545455)
+texture_normal = ExtResource("5_75vfm")
+action = "jump"
+
+[node name="DownBtn" type="TouchScreenButton" parent="UI/TouchControls" unique_id=1124086936]
+position = Vector2(754.00006, 354.00003)
+scale = Vector2(3.9999993, 5.6363664)
+texture_normal = ExtResource("6_0owmy")
+action = "down_crouch"
