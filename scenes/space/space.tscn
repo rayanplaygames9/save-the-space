@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://21v0remrmi0u"]
+
+[ext_resource type="Texture2D" uid="uid://dcsacrbw2bso6" path="res://assets/sky_space.png" id="1_2482y"]
+[ext_resource type="Script" uid="uid://dj8kvfp3j7x3s" path="res://scripts/space.gd" id="1_x217o"]
+[ext_resource type="PackedScene" uid="uid://b6kljbc0o1l5s" path="res://scenes/player/player.tscn" id="2_ugvpa"]
+[ext_resource type="PackedScene" uid="uid://b242ndeq5lfjs" path="res://scenes/alien/alien.tscn" id="4_718x5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p41vm"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
+sky_cover = ExtResource("1_2482y")
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
+sun_angle_max = 0.0
+sun_curve = 9.017163e-05
+
+[sub_resource type="Sky" id="Sky_ugvpa"]
+sky_material = SubResource("ProceduralSkyMaterial_p41vm")
+
+[sub_resource type="Environment" id="Environment_x217o"]
+background_mode = 2
+sky = SubResource("Sky_ugvpa")
+
+[node name="Space" type="Node3D" unique_id=751525319]
+script = ExtResource("1_x217o")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1720483994]
+environment = SubResource("Environment_x217o")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1588337152]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." unique_id=645777256 instance=ExtResource("2_ugvpa")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7022941, 0, 3.0592818)
+
+[node name="SpawnRockTimer" type="Timer" parent="." unique_id=1812926862]
+wait_time = 3.5
+autostart = true
+
+[node name="Alien" parent="." unique_id=2069206223 instance=ExtResource("4_718x5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3516169, 0, 10.406048)
+
+[connection signal="timeout" from="SpawnRockTimer" to="." method="_on_spawn_rock_timer_timeout"]

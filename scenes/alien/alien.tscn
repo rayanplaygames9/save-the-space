@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://b242ndeq5lfjs"]
+
+[ext_resource type="Script" uid="uid://6gffs515vabc" path="res://scenes/alien/alien.gd" id="1_vdrsh"]
+[ext_resource type="PackedScene" uid="uid://c8ncglqjiyb73" path="res://scenes/components/health_component.tscn" id="2_y7hky"]
+[ext_resource type="PackedScene" uid="uid://cmh6mc1lufhvb" path="res://scenes/components/hitbox_component.tscn" id="3_6nl3j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1nkd"]
+albedo_color = Color(0.18, 1, 0.4123333, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_tapir"]
+material = SubResource("StandardMaterial3D_k1nkd")
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hk6ki"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tapir"]
+height = 1.2287598
+
+[node name="Alien" type="CharacterBody3D" unique_id=2069206223]
+script = ExtResource("1_vdrsh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1579219234]
+mesh = SubResource("CapsuleMesh_tapir")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=970756190]
+shape = SubResource("CapsuleShape3D_hk6ki")
+
+[node name="Head" type="Node3D" parent="." unique_id=1336283558]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7300476, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head" unique_id=1547017720]
+transform = Transform3D(0.3292663, 0, 0, 0, -1.2683753e-08, 0.39522997, 0, -0.29017043, -1.727605e-08, 0, -0.2479639, -0.4938246)
+mesh = SubResource("CylinderMesh_tapir")
+
+[node name="HealthComponent" parent="." unique_id=3380568 instance=ExtResource("2_y7hky")]
+MAX_HEALTH = 75.0
+
+[node name="HitboxComponent" parent="." unique_id=204278258 node_paths=PackedStringArray("health_component") instance=ExtResource("3_6nl3j")]
+health_component = NodePath("../HealthComponent")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitboxComponent" unique_id=112874841]
+shape = SubResource("CapsuleShape3D_hk6ki")
+
+[node name="StartMoveTimer" type="Timer" parent="." unique_id=797868934]
+unique_name_in_owner = true
+wait_time = 3.0
+one_shot = true
+autostart = true
+
+[node name="StopVelTimer" type="Timer" parent="." unique_id=909232866]
+unique_name_in_owner = true
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="StartMoveTimer" to="." method="_on_start_move_timer_timeout"]
+[connection signal="timeout" from="StopVelTimer" to="." method="_on_stop_vel_timer_timeout"]
