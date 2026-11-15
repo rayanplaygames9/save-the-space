@@ -18,6 +18,7 @@ class_name Player
 @onready var weapon_raycast: RayCast3D = $Head/Camera3D/WeaponRaycast
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var levelbar: ProgressBar = %Levelbar
+@onready var maxlevelhit_label: Label = %MAXLEVELHITLabel
 
 var hover_time := 0.0
 var attack_damage := 10.0
@@ -88,3 +89,10 @@ func _physics_process(delta: float) -> void:
 		levelbar.value = stats.level
 		broke_rock = false
 		print("level up! %s" % stats.level)
+		
+	if stats.level == stats.MAX_LEVEL:
+		maxlevelhit_label.show()
+		await get_tree().create_timer(2.0).timeout
+		maxlevelhit_label.hide()
+	else:
+		maxlevelhit_label.hide()

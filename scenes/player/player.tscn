@@ -267,6 +267,8 @@ max_value = 10.0
 show_percentage = false
 
 [node name="MAXLEVELHITLabel" type="Label" parent="UI" unique_id=474106427]
+unique_name_in_owner = true
+visible = false
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
