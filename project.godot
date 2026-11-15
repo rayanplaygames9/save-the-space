@@ -11,10 +11,11 @@ config_version=5
 [application]
 
 config/name="Save the Space"
+config/description="Save the space from the alien rocks!"
 run/main_scene="uid://21v0remrmi0u"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 boot_splash/show_image=false
-config/icon="res://icon.svg"
+config/icon="uid://cmnytqeu0ts7a"
 
 [autoload]
 
