@@ -61,6 +61,21 @@ func _physics_process(delta: float) -> void:
 	
 	if Input.is_action_pressed("left_mouse") and not anim_player.is_playing():
 		anim_player.play("hit_axe")
+		
+		match stats.level:
+			0.0:
+				attack_damage = 10.0
+			1.0:
+				attack_damage = 20.0
+			2.0:
+				attack_damage = 30.0
+			3.0:
+				attack_damage = 40.0
+			4.0:
+				attack_damage = 50.0
+			_:
+				attack_damage = 60.0 # Level 5+ or fallback
+				
 		if weapon_raycast.is_colliding():
 			var hit_rock = weapon_raycast.get_collider()
 			if hit_rock :
@@ -68,6 +83,7 @@ func _physics_process(delta: float) -> void:
 				if ht_hitbox_component:
 					var attack = Attack.new()
 					attack.attack_damage = attack_damage
+					print("DEALT DAMAGE VALUE IS: ", attack.attack_damage) # <-- Add this line!
 					ht_hitbox_component.damage(attack)
 					if ht_hitbox_component.health_component.health <= 0.0 \
 							and ht_hitbox_component.get_parent() is GreenRock:
@@ -86,6 +102,7 @@ func _physics_process(delta: float) -> void:
 				
 	if broke_rock:
 		stats.level += 1.0
+		stats.level_changed.emit(stats.level)
 		levelbar.value = stats.level
 		broke_rock = false
 		print("level up! %s" % stats.level)

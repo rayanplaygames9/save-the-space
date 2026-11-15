@@ -60,5 +60,5 @@ func _on_stop_vel_timer_timeout() -> void:
 	velocity = Vector3.ZERO
 	place_rock()
 	placed_rocks += 1
-	print(placed_rocks)
+	print("Alien placed rocks: %s" % placed_rocks)
 	start_move_timer.start()

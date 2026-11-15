@@ -1,6 +1,8 @@
 extends Resource
 class_name Stats
 
+signal level_changed(new_level: float)
+
 @export var MAX_LEVEL: float = 10.0
 @export var level: float = 0.0:
 	set(value):
