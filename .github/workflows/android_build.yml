@@ -1,0 +1,19 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Godot Android export
+        uses: dulvui/godot-android-export@v4
+        with:
+          godot-version: "4.7.2" # Change this to match your exact Godot version (e.g., 4.2.2, 4.4, etc.)
