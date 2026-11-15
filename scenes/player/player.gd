@@ -8,6 +8,7 @@ class_name Player
 @export var vertical_accel := 20.0
 @export var gravity := 9.8
 @export var mouse_sensitivity := .005
+@export var stats: Stats
 
 @export_group("Idle Hover Settings")
 @export var hover_speed := 2.0      # How fast the bobbing cycle goes
@@ -19,6 +20,7 @@ class_name Player
 
 var hover_time := 0.0
 var attack_damage := 10.0
+var broke_rock := false
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -66,11 +68,21 @@ func _physics_process(delta: float) -> void:
 					attack.attack_damage = attack_damage
 					ht_hitbox_component.damage(attack)
 					if ht_hitbox_component.health_component.health <= 0.0 \
-						and ht_hitbox_component.get_parent() is GreenRock:
+							and ht_hitbox_component.get_parent() is GreenRock:
 						var alien = get_tree().current_scene.get_node_or_null("Alien")
 						if alien:
 							alien.placed_rocks -= 1
+					if ht_hitbox_component.health_component.health <= 0.0 \
+							and ht_hitbox_component.get_parent() is GreenRock \
+							or ht_hitbox_component.health_component.health <= 0.0 \
+							and ht_hitbox_component.get_parent() is NormalRock:
+						broke_rock = true
 				else:
 					push_error("ht_hitbox_component not found!")
 			else:
 				push_error("hit_rock not found!")
+				
+	if broke_rock:
+		stats.level += 1.0
+		broke_rock = false
+		print("level up! %s" % stats.level)

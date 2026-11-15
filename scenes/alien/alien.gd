@@ -42,7 +42,6 @@ func _process(delta: float) -> void:
 		var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
 		if player_danger_label:
 			player_danger_label.hide()
-		
 
 func place_rock():
 	var green_rock = GREEN_ROCK.instantiate()
