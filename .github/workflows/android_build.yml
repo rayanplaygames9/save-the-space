@@ -4,16 +4,48 @@ on:
   push:
     branches: [ "main", "master" ]
 
+env:
+  GODOT_VERSION: "4.7.2" # Match your exact Godot version (e.g. 4.3, 4.4.1)
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Godot Android export
-        uses: dulvui/godot-android-export@v4
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
         with:
-          godot-version: "4.7.2" # Change this to match your exact Godot version (e.g., 4.2.2, 4.4, etc.)
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download Godot & Export Templates
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip -q Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          unzip -q Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      - name: Generate Debug Keystore & Import Assets
+        run: |
+          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999 -deststoretype pkcs12
+          mkdir -p ~/.config/godot
+          echo 'export/android/android_sdk_path = "/usr/local/lib/android/sdk"' >> ~/.config/godot/editor_settings-4.tres
+          echo 'export/android/debug_keystore = "'"$PWD"'/debug.keystore"' >> ~/.config/godot/editor_settings-4.tres
+          echo 'export/android/debug_keystore_user = "androiddebugkey"' >> ~/.config/godot/editor_settings-4.tres
+          echo 'export/android/debug_keystore_pass = "android"' >> ~/.config/godot/editor_settings-4.tres
+          ./Godot_v${GODOT_VERSION}-stable_linux.x86_64 --headless --import
+
+      - name: Export Android APK
+        run: |
+          mkdir -p build
+          ./Godot_v${GODOT_VERSION}-stable_linux.x86_64 --headless --export-debug "Android" build/save-the-space.apk
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: save-the-space-android
+          path: build/save-the-space.apk
