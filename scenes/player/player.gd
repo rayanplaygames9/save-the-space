@@ -62,19 +62,114 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_pressed("left_mouse") and not anim_player.is_playing():
 		anim_player.play("hit_axe")
 		
-		match stats.level:
-			0.0:
-				attack_damage = 10.0
-			1.0:
-				attack_damage = 20.0
-			2.0:
-				attack_damage = 30.0
-			3.0:
-				attack_damage = 40.0
-			4.0:
-				attack_damage = 50.0
-			_:
-				attack_damage = 60.0 # Level 5+ or fallback
+		# 👇 Calculate damage on the fly based on current level!
+		attack_damage = 10.0 + (stats.level * 1.0) + (pow(stats.level, 1.3) * 0.4)
+		
+		#match stats.level:
+			#0.0:
+				#attack_damage = 10.0
+			#1.0:
+				#attack_damage = 10.2
+			#2.0:
+				#attack_damage = 10.4
+			#3.0:
+				#attack_damage = 10.8
+			#4.0:
+				#attack_damage = 12.0
+			#5.0:
+				#attack_damage = 12.5
+			#6.0:
+				#attack_damage = 12.9
+			#7.0:
+				#attack_damage = 14.2
+			#8.0:
+				#attack_damage = 14.8
+			#9.0:
+				#attack_damage = 15.1
+			#10.0:
+				#attack_damage = 15.6
+			#11.0:
+				#attack_damage = 15.9
+			#12.0:
+				#attack_damage = 16.5
+			#13.0:
+				#attack_damage = 17.0
+			#14.0:
+				#attack_damage = 20.0
+			#15.0:
+				#attack_damage = 22.6
+			#16.0:
+				#attack_damage = 24.0
+			#17.0:
+				#attack_damage = 24.5
+			#18.0:
+				#attack_damage = 28.0
+			#19.0:
+				#attack_damage = 30.2
+			#20.0:
+				#attack_damage = 30.6
+			#21.0:
+				#attack_damage = 31.21
+			#22.0:
+				#attack_damage = 33.0
+			#23.0:
+				#attack_damage = 33.1
+			#24.0:
+				#attack_damage = 33.6
+			#25.0:
+				#attack_damage = 33.8
+			#26.0:
+				#attack_damage = 34.2
+			#27.0:
+				#attack_damage = 34.6
+			#28.0:
+				#attack_damage = 35.0
+			#29.0:
+				#attack_damage = 35.2
+			#30.0:
+				#attack_damage = 35.6
+			#31.0:
+				#attack_damage = 35.9
+			#32.0:
+				#attack_damage = 36.1
+			#33.0:
+				#attack_damage = 37.23
+			#34.0:
+				#attack_damage = 37.63
+			#35.0:
+				#attack_damage = 38.81
+			#36.0:
+				#attack_damage = 40.05
+			#37.0:
+				#attack_damage = 40.51
+			#38.0:
+				#attack_damage = 41.2
+			#39.0:
+				#attack_damage = 41.52
+			#40.0:
+				#attack_damage = 45.83
+			#41.0:
+				#attack_damage = 46.0
+			#42.0:
+				#attack_damage = 48.57
+			#43.0:
+				#attack_damage = 48.64
+			#44.0:
+				#attack_damage = 49.12
+			#45.0:
+				#attack_damage = 49.19
+			#46.0:
+				#attack_damage = 50.19
+			#47.0:
+				#attack_damage = 51.31
+			#48.0:
+				#attack_damage = 54.51
+			#49.0:
+				#attack_damage = 56.89
+			#50.0:
+				#attack_damage = 60.15
+			#_:
+				#attack_damage = 70.0 # Level 5+ or fallback
 				
 		if weapon_raycast.is_colliding():
 			var hit_rock = weapon_raycast.get_collider()
@@ -102,7 +197,6 @@ func _physics_process(delta: float) -> void:
 				
 	if broke_rock:
 		stats.level += 1.0
-		stats.level_changed.emit(stats.level)
 		levelbar.value = stats.level
 		broke_rock = false
 		print("level up! %s" % stats.level)
