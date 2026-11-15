@@ -16,7 +16,7 @@ var directions := [
 
 var speed: float = 5.0
 var random_dir: Vector3
-var placed_rocks := 0
+static var placed_rocks := 0
 var player: Player
 
 func _ready() -> void:
