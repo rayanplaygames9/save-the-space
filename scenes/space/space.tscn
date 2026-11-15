@@ -3,7 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://dcsacrbw2bso6" path="res://assets/sky_space.png" id="1_2482y"]
 [ext_resource type="Script" uid="uid://dj8kvfp3j7x3s" path="res://scripts/space.gd" id="1_x217o"]
 [ext_resource type="PackedScene" uid="uid://b6kljbc0o1l5s" path="res://scenes/player/player.tscn" id="2_ugvpa"]
-[ext_resource type="PackedScene" uid="uid://b242ndeq5lfjs" path="res://scenes/alien/alien.tscn" id="4_718x5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p41vm"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -38,7 +37,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7022941, 0, 3.0592818)
 wait_time = 3.5
 autostart = true
 
-[node name="Alien" parent="." unique_id=2069206223 instance=ExtResource("4_718x5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3516169, 0, 10.406048)
+[node name="SpawnAlienTimer" type="Timer" parent="." unique_id=104891534]
+wait_time = 5.0
+autostart = true
 
 [connection signal="timeout" from="SpawnRockTimer" to="." method="_on_spawn_rock_timer_timeout"]
+[connection signal="timeout" from="SpawnAlienTimer" to="." method="_on_spawn_alien_timer_timeout"]
