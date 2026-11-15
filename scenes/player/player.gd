@@ -23,6 +23,7 @@ class_name Player
 var hover_time := 0.0
 var attack_damage := 10.0
 var broke_rock := false
+var max_popup_triggered := false
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -63,7 +64,8 @@ func _physics_process(delta: float) -> void:
 		anim_player.play("hit_axe")
 		
 		# 👇 Calculate damage on the fly based on current level!
-		attack_damage = 10.0 + (stats.level * 1.0) + (pow(stats.level, 1.3) * 0.4)
+		# Gentle curve that grows slowly and hits 50+ damage around level 45-48
+		attack_damage = 10.0 + (stats.level * 0.6) + (pow(stats.level, 1.1) * 0.2)
 		
 		#match stats.level:
 			#0.0:
@@ -196,14 +198,24 @@ func _physics_process(delta: float) -> void:
 				push_error("hit_rock not found!")
 				
 	if broke_rock:
-		stats.level += 1.0
-		levelbar.value = stats.level
+		handle_levelup()
 		broke_rock = false
-		print("level up! %s" % stats.level)
+
+func handle_levelup():
+	# If we are already maxed out, don't try to level up further
+	if stats.level >= stats.MAX_LEVEL:
+		return
+	
+	stats.level += 1.0
+	levelbar.value = stats.level
+	print("level up %s" % stats.level)
+	
+	# Check if this exact level-up hit max level FOR THE FIRST TIME
+	if stats.level >= stats.MAX_LEVEL and not max_popup_triggered:
+		max_popup_triggered = true
+		show_max_level_popup()
 		
-	if stats.level == stats.MAX_LEVEL:
-		maxlevelhit_label.show()
-		await get_tree().create_timer(2.0).timeout
-		maxlevelhit_label.hide()
-	else:
-		maxlevelhit_label.hide()
+func show_max_level_popup():
+	maxlevelhit_label.show()
+	await get_tree().create_timer(2.0).timeout
+	maxlevelhit_label.hide()

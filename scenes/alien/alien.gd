@@ -48,9 +48,6 @@ func place_rock():
 	green_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
 	get_tree().current_scene.add_child(green_rock)
 	
-	if green_rock.position == position or global_position:
-		green_rock.position = green_rock.global_position + Vector3(5.0, 0.0, 5.0)
-
 func _on_start_move_timer_timeout() -> void:
 	random_dir = directions.pick_random()
 	velocity = speed * random_dir
