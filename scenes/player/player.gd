@@ -17,6 +17,7 @@ class_name Player
 @onready var head: Node3D = $Head
 @onready var weapon_raycast: RayCast3D = $Head/Camera3D/WeaponRaycast
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
+@onready var levelbar: ProgressBar = %Levelbar
 
 var hover_time := 0.0
 var attack_damage := 10.0
@@ -84,5 +85,6 @@ func _physics_process(delta: float) -> void:
 				
 	if broke_rock:
 		stats.level += 1.0
+		levelbar.value = stats.level
 		broke_rock = false
 		print("level up! %s" % stats.level)
