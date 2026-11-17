@@ -7,6 +7,7 @@ extends CharacterBody3D
 
 ## constant scenes
 const GREEN_ROCK = preload("uid://b07qvnwfs8w1n")
+const DANGEROUS_OBJECT = preload("uid://cts34uc3idrbh")
 
 ## constant variables
 const MAX_GREEN_ROCKS := 100
@@ -24,6 +25,7 @@ var random_dir: Vector3
 static var placed_rocks := 0
 var player: Player
 var green_rock_pool: Array[GreenRock] = []
+var disabled := false
 
 func _ready() -> void:
 	player = get_tree().current_scene.get_node_or_null("Player")
@@ -43,27 +45,38 @@ func _ready() -> void:
 		green_rock_pool.append(green_rock)
 
 func _physics_process(delta: float) -> void:
-	move_and_slide()
-	
-	# Only rotate if the alien is actually moving to avoid errors/snapping
-	if velocity.length_squared() > .01:
-		# Create a target point ahead of the alien, keeping Y flat so it doesn't tilt
-		var look_target := global_position + Vector3(velocity.x, 0, velocity.z)
-		look_at(look_target, Vector3.UP)
-	if velocity != Vector3.ZERO:
-		velocity = velocity.move_toward(random_dir * speed, acceleration * delta)
+	if not disabled:
+		move_and_slide()
+
+		# Only rotate if the alien is actually moving to avoid errors/snapping
+		if velocity.length_squared() > .01:
+			# Create a target point ahead of the alien, keeping Y flat so it doesn't tilt
+			var look_target := global_position + Vector3(velocity.x, 0, velocity.z)
+			look_at(look_target, Vector3.UP)
+		if velocity != Vector3.ZERO:
+			velocity = velocity.move_toward(random_dir * speed, acceleration * delta)
 
 func _process(delta: float) -> void:
-	if placed_rocks >= 6:
-		var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
-		if player_danger_label:
-			player_danger_label.show()
-	else:
-		var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
-		if player_danger_label:
-			player_danger_label.hide()
+	if not disabled:
+		if placed_rocks >= 10:
+			for i in range(10):
+				var dangerous_object = DANGEROUS_OBJECT.instantiate()
+				dangerous_object.position = position + Vector3(10, 20, 10)
+				get_tree().current_scene.add_child(dangerous_object)
+
+		if placed_rocks >= 6:
+			var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
+			if player_danger_label:
+				player_danger_label.show()
+		else:
+			var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
+			if player_danger_label:
+				player_danger_label.hide()
 
 func place_rock() -> bool:
+	if disabled:
+		return false
+
 	for g_rock in green_rock_pool:
 		if not g_rock.visible:
 			g_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
@@ -83,16 +96,18 @@ func place_rock() -> bool:
 	return false # Pool is full, nothing placed
 			
 func _on_start_move_timer_timeout() -> void:
-	random_dir = directions.pick_random()
-	velocity = speed * random_dir
-	stop_vel_timer.start()
+	if not disabled:
+		random_dir = directions.pick_random()
+		velocity = speed * random_dir
+		stop_vel_timer.start()
 
 func _on_stop_vel_timer_timeout() -> void:
-	velocity = Vector3.ZERO
-	
-	# Only increment and print if place_rock() actually succeeded!
-	if place_rock():
-		placed_rocks += 1
-		print("Alien placed rocks: %s" % placed_rocks)
+	if not disabled:
+		velocity = Vector3.ZERO
 		
-	start_move_timer.start()
+		# Only increment and print if place_rock() actually succeeded!
+		if place_rock():
+			placed_rocks += 1
+			print("Alien placed rocks: %s" % placed_rocks)
+			
+		start_move_timer.start()

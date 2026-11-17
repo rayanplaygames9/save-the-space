@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://cts34uc3idrbh"]
+
+[ext_resource type="Script" uid="uid://cwa5pjj1esl1s" path="res://scripts/dangerous_object.gd" id="1_g3snp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1nkd"]
+shading_mode = 0
+
+[sub_resource type="PrismMesh" id="PrismMesh_tapir"]
+material = SubResource("StandardMaterial3D_k1nkd")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hk6ki"]
+radius = 0.851776
+
+[node name="DangerousObject" type="Area3D" unique_id=1666177167]
+script = ExtResource("1_g3snp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1384052242]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("PrismMesh_tapir")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1209027403]
+shape = SubResource("SphereShape3D_hk6ki")
