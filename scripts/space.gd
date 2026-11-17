@@ -1,7 +1,16 @@
 extends Node3D
 
+## constant scenes
 const ROCK = preload("uid://cnrrhibhfrfxq")
 const ALIEN = preload("uid://b242ndeq5lfjs")
+
+## constant variables
+const MAX_ROCKS := 100
+const MAX_ALIENS := 15
+
+## variables
+var can_spawn_rock := true
+var can_spawn_alien := true
 
 func spawn_rock():
 	var rock = ROCK.instantiate()
