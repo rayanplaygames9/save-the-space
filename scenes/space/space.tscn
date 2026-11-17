@@ -38,7 +38,6 @@ wait_time = 3.5
 autostart = true
 
 [node name="SpawnAlienTimer" type="Timer" parent="." unique_id=104891534]
-wait_time = 20.0
 autostart = true
 
 [connection signal="timeout" from="SpawnRockTimer" to="." method="_on_spawn_rock_timer_timeout"]

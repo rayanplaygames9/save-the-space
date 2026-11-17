@@ -26,6 +26,7 @@ static var placed_rocks := 0
 var player: Player
 var green_rock_pool: Array[GreenRock] = []
 var disabled := false
+var is_dangerous_rain_triggered := false
 
 func _ready() -> void:
 	player = get_tree().current_scene.get_node_or_null("Player")
@@ -58,11 +59,7 @@ func _physics_process(delta: float) -> void:
 
 func _process(delta: float) -> void:
 	if not disabled:
-		if placed_rocks >= 10:
-			for i in range(10):
-				var dangerous_object = DANGEROUS_OBJECT.instantiate()
-				dangerous_object.position = position + Vector3(10, 20, 10)
-				get_tree().current_scene.add_child(dangerous_object)
+		check_rain_trigger()
 
 		if placed_rocks >= 6:
 			var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
@@ -111,3 +108,32 @@ func _on_stop_vel_timer_timeout() -> void:
 			print("Alien placed rocks: %s" % placed_rocks)
 			
 		start_move_timer.start()
+		
+func check_rain_trigger():
+	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
+		is_dangerous_rain_triggered = true # Prevents it from running every frame!
+		
+		for i in range(10):
+			var dangerous_object = DANGEROUS_OBJECT.instantiate()
+			
+			# Scatter them randomly around the sky above the alien
+			var random_offset := Vector3(randf_range(-15.0, 15.0), randf_range(15.0, 20.0), randf_range(-15.0, 15.0))
+			dangerous_object.position = position + random_offset
+			
+			get_tree().current_scene.add_child(dangerous_object)
+
+		print("It's raining dangerous objects!")
+
+func _on_rain_d_object_timer_timeout() -> void:
+	if placed_rocks >= 10:
+		for i in range(10):
+			var dangerous_object = DANGEROUS_OBJECT.instantiate()
+			
+			# Scatter them randomly around the sky above the alien
+			var random_offset := Vector3(randf_range(-15.0, 15.0), randf_range(15.0, 20.0), randf_range(-15.0, 15.0))
+			dangerous_object.position = position + random_offset
+			
+			get_tree().current_scene.add_child(dangerous_object)
+			
+			# This runs in the background and destroys this specific object after 5 seconds
+			create_tween().tween_callback(dangerous_object.queue_free).set_delay(5.0)

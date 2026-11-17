@@ -51,5 +51,10 @@ unique_name_in_owner = true
 wait_time = 2.0
 one_shot = true
 
+[node name="RainDObjectTimer" type="Timer" parent="." unique_id=1899690484]
+wait_time = 2.0
+autostart = true
+
 [connection signal="timeout" from="StartMoveTimer" to="." method="_on_start_move_timer_timeout"]
 [connection signal="timeout" from="StopVelTimer" to="." method="_on_stop_vel_timer_timeout"]
+[connection signal="timeout" from="RainDObjectTimer" to="." method="_on_rain_d_object_timer_timeout"]
