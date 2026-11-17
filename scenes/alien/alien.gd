@@ -5,8 +5,13 @@ extends CharacterBody3D
 @onready var start_move_timer: Timer = %StartMoveTimer
 @onready var stop_vel_timer: Timer = %StopVelTimer
 
+## constant scenes
 const GREEN_ROCK = preload("uid://b07qvnwfs8w1n")
 
+## constant variables
+const MAX_GREEN_ROCKS := 100
+
+## variables
 var directions := [
 	Vector3.LEFT,
 	Vector3.RIGHT,
@@ -18,9 +23,26 @@ var speed: float = 5.0
 var random_dir: Vector3
 static var placed_rocks := 0
 var player: Player
+var green_rock_pool: Array[GreenRock] = []
 
 func _ready() -> void:
 	player = get_tree().current_scene.get_node_or_null("Player")
+	
+	# Pre-instantiate Green Rocks and hide them
+	for i in range(MAX_GREEN_ROCKS):
+		var green_rock = GREEN_ROCK.instantiate() as GreenRock
+		green_rock.visible = false
+		green_rock.set_physics_process(false)
+		green_rock.set_process(false)
+	
+		# Disable collision shape on start
+		green_rock.get_node("CollisionShape3D").disabled = true
+		green_rock.get_node("HitboxComponent/CollisionShape3D").disabled = true
+		
+		# add pre-instantiated g_rocks to scene
+		get_tree().current_scene.add_child(green_rock)
+		# fill pool
+		green_rock_pool.append(green_rock)
 
 func _physics_process(delta: float) -> void:
 	move_and_slide()
@@ -43,11 +65,27 @@ func _process(delta: float) -> void:
 		if player_danger_label:
 			player_danger_label.hide()
 
-func place_rock():
-	var green_rock = GREEN_ROCK.instantiate()
-	green_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
-	get_tree().current_scene.add_child(green_rock)
-	
+func place_rock() -> bool:
+	for g_rock in green_rock_pool:
+		if not g_rock.visible:
+			g_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
+			g_rock.visible = true
+			g_rock.set_physics_process(true)
+			g_rock.set_process(true)
+			
+			g_rock.get_node("CollisionShape3D").disabled = false
+			g_rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
+				
+			var health_comp: HealthComponent = g_rock.get_node_or_null("HealthComponent")
+			if health_comp:
+				health_comp.health = health_comp.MAX_HEALTH
+				
+			return true # Successfully placed a rock!
+			
+	# If the loop finishes without finding an inactive rock:
+	print("Max green rocks reached! Alien cannot place more.")
+	return false # Pool is full, nothing placed
+			
 func _on_start_move_timer_timeout() -> void:
 	random_dir = directions.pick_random()
 	velocity = speed * random_dir
