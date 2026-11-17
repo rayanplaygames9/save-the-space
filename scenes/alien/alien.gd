@@ -32,8 +32,6 @@ func _ready() -> void:
 	for i in range(MAX_GREEN_ROCKS):
 		var green_rock = GREEN_ROCK.instantiate() as GreenRock
 		green_rock.visible = false
-		green_rock.set_physics_process(false)
-		green_rock.set_process(false)
 	
 		# Disable collision shape on start
 		green_rock.get_node("CollisionShape3D").disabled = true
@@ -70,8 +68,6 @@ func place_rock() -> bool:
 		if not g_rock.visible:
 			g_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
 			g_rock.visible = true
-			g_rock.set_physics_process(true)
-			g_rock.set_process(true)
 			
 			g_rock.get_node("CollisionShape3D").disabled = false
 			g_rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
@@ -93,7 +89,10 @@ func _on_start_move_timer_timeout() -> void:
 
 func _on_stop_vel_timer_timeout() -> void:
 	velocity = Vector3.ZERO
-	place_rock()
-	placed_rocks += 1
-	print("Alien placed rocks: %s" % placed_rocks)
+	
+	# Only increment and print if place_rock() actually succeeded!
+	if place_rock():
+		placed_rocks += 1
+		print("Alien placed rocks: %s" % placed_rocks)
+		
 	start_move_timer.start()

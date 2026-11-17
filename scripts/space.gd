@@ -15,8 +15,6 @@ func _ready() -> void:
 	for i in range(MAX_ROCKS):
 		var rock = ROCK.instantiate()
 		rock.visible = false
-		rock.set_physics_process(false)
-		rock.set_process(false)
 		get_tree().current_scene.add_child(rock)
 		
 		rock.get_node("HitboxComponent/CollisionShape3D").disabled = true
@@ -32,8 +30,6 @@ func spawn_rock():
 	for rock in rocks:
 		if not rock.visible:
 			rock.visible = true
-			rock.set_physics_process(true)
-			rock.set_process(true)
 			
 			# Re-enable collision if you disabled it on death
 			rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
