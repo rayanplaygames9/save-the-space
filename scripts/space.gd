@@ -43,7 +43,7 @@ func _ready() -> void:
 func spawn_rock():
 	var spawned := false
 	
-	# Loop through your pool to find an available (hidden) rock
+	# Loop through the pool to find an available (hidden) rock
 	for rock in rocks:
 		if not rock.visible:
 			rock.visible = true

@@ -10,6 +10,7 @@ class_name Player
 @export var mouse_sensitivity := .005
 @export var stats: Stats
 @export var health_component: HealthComponent
+@export var attack_damage := 10.0
 
 @export_group("Idle Hover Settings")
 @export var hover_speed := 2.0      # How fast the bobbing cycle goes
@@ -24,7 +25,6 @@ class_name Player
 @onready var touch_controls: Control = %TouchControls
 
 var hover_time := 0.0
-var attack_damage := 10.0
 var broke_rock := false
 var max_popup_triggered := false
 
