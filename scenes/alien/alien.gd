@@ -113,25 +113,28 @@ func check_rain_trigger():
 	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
 		is_dangerous_rain_triggered = true # Prevents it from running every frame!
 		
-		for i in range(10):
+		for i in range(50):
 			var dangerous_object = DANGEROUS_OBJECT.instantiate()
 			
 			# Scatter them randomly around the sky above the alien
 			var random_offset := Vector3(randf_range(-15.0, 15.0), randf_range(15.0, 20.0), randf_range(-15.0, 15.0))
-			dangerous_object.position = position + random_offset
+			dangerous_object.position = Vector3(0, 15, 0) + random_offset
 			
 			get_tree().current_scene.add_child(dangerous_object)
+			
+			# This runs in the background and destroys this specific object after 5 seconds
+			create_tween().tween_callback(dangerous_object.queue_free).set_delay(5.0)
 
 		print("It's raining dangerous objects!")
 
 func _on_rain_d_object_timer_timeout() -> void:
 	if placed_rocks >= 10:
-		for i in range(10):
+		for i in range(50):
 			var dangerous_object = DANGEROUS_OBJECT.instantiate()
 			
 			# Scatter them randomly around the sky above the alien
-			var random_offset := Vector3(randf_range(-15.0, 15.0), randf_range(15.0, 20.0), randf_range(-15.0, 15.0))
-			dangerous_object.position = position + random_offset
+			var random_offset := Vector3(randf_range(-150.0, 150.0), randf_range(15.0, 20.0), randf_range(-150.0, 150.0))
+			dangerous_object.position = Vector3(0, 15, 0) + random_offset
 			
 			get_tree().current_scene.add_child(dangerous_object)
 			

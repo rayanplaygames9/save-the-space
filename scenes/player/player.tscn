@@ -137,13 +137,28 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[node name="Player" type="CharacterBody3D" unique_id=645777256]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p41vm"]
+bg_color = Color(0.50778806, 0.048810072, 0.04887122, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_alwvq"]
+bg_color = Color(0.2633806, 0.5324371, 0.018800257, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Player" type="CharacterBody3D" unique_id=645777256 node_paths=PackedStringArray("health_component")]
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_8afob")
 down_strength = 2.0
 gravity = 1.0
 stats = ExtResource("2_0owmy")
+health_component = NodePath("HealthComponent")
 hover_speed = 5.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1413528908]
@@ -172,7 +187,7 @@ MAX_HEALTH = 100.0
 
 [node name="HitboxComponent" parent="." unique_id=204278258 node_paths=PackedStringArray("health_component") instance=ExtResource("3_lvxji")]
 collision_layer = 2
-collision_mask = 12
+collision_mask = 16
 health_component = NodePath("../HealthComponent")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HitboxComponent" unique_id=1293123943]
@@ -214,6 +229,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tapir")
 
 [node name="TouchControls" type="Control" parent="UI" unique_id=939590879]
+unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -286,5 +302,28 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0.069424175, 0.8964811, 7.70092e-06, 1)
 theme_override_font_sizes/font_size = 32
 text = "MAX LEVEL HIT!!!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Healthbar" type="ProgressBar" parent="UI" unique_id=793972239]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -185.0
+offset_right = 185.0
+offset_bottom = 65.0
+grow_horizontal = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_p41vm")
+theme_override_styles/fill = SubResource("StyleBoxFlat_alwvq")
+value = 100.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="UI" unique_id=865167729]
+offset_left = 313.0
+offset_right = 391.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 32
+text = "HP:"
 horizontal_alignment = 1
 vertical_alignment = 1

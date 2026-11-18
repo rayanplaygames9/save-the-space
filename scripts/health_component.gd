@@ -1,6 +1,8 @@
 extends Node3D
 class_name HealthComponent
 
+signal health_changed(new_health: float)
+
 @export var MAX_HEALTH: float = 50.0
 var health: float
 
@@ -11,13 +13,15 @@ func _ready() -> void:
 	
 func damage(attack: Attack):
 	health -= attack.attack_damage
+	health_changed.emit(health)
+	print("Player health: %s" % health)
 	
 	if health <= 0.0:
 		respawn()
 			
 func respawn():
 	if get_parent() is Player:
-		get_tree().reload_current_scene()
+		get_tree().reload_current_scene.call_deferred()
 	else:
 		# Instead of destroying it, hide it and disable it for the pool!
 		get_parent().visible = false

@@ -9,16 +9,19 @@ class_name Player
 @export var gravity := 9.8
 @export var mouse_sensitivity := .005
 @export var stats: Stats
+@export var health_component: HealthComponent
 
 @export_group("Idle Hover Settings")
 @export var hover_speed := 2.0      # How fast the bobbing cycle goes
 @export var hover_strength := 0.5   # How high/low the character bobs
 
+@onready var healthbar: ProgressBar = %Healthbar
 @onready var head: Node3D = $Head
 @onready var weapon_raycast: RayCast3D = $Head/Camera3D/WeaponRaycast
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var levelbar: ProgressBar = %Levelbar
 @onready var maxlevelhit_label: Label = %MAXLEVELHITLabel
+@onready var touch_controls: Control = %TouchControls
 
 var hover_time := 0.0
 var attack_damage := 10.0
@@ -26,7 +29,13 @@ var broke_rock := false
 var max_popup_triggered := false
 
 func _ready() -> void:
+	if OS.has_feature("pc"):
+		touch_controls.hide()
+	if OS.has_feature("mobile"):
+		touch_controls.show()
+		
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	health_component.health_changed.connect(_on_health_comp_health_changed)
 	
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -113,3 +122,6 @@ func show_max_level_popup():
 	maxlevelhit_label.show()
 	await get_tree().create_timer(2.0).timeout
 	maxlevelhit_label.hide()
+
+func _on_health_comp_health_changed(new_health: float):
+	healthbar.value = new_health
