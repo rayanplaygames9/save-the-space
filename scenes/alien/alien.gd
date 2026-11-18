@@ -63,7 +63,7 @@ func _physics_process(delta: float) -> void:
 		if velocity != Vector3.ZERO:
 			velocity = velocity.move_toward(random_dir * speed, acceleration * delta)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not disabled:
 		check_rain_trigger()
 
