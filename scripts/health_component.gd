@@ -14,8 +14,9 @@ func _ready() -> void:
 func damage(attack: Attack):
 	health -= attack.attack_damage
 	health_changed.emit(health)
-	print("Player health: %s" % health)
-	
+	if get_parent() is Player:
+		print("Player health: %s" % health)
+
 	if health <= 0.0:
 		respawn()
 			

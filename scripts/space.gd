@@ -23,7 +23,7 @@ func _ready() -> void:
 		rock.get_node("HitboxComponent/CollisionShape3D").disabled = true
 		rock.get_node("CollisionShape3D").disabled = true
 		
-		# Add each pre-instantiated rock into your array pool
+		# Add each pre-instantiated rock into the array pool
 		rocks.append(rock)
 		
 	for i in range(MAX_ALIENS):
@@ -48,7 +48,7 @@ func spawn_rock():
 		if not rock.visible:
 			rock.visible = true
 			
-			# Re-enable collision if you disabled it on death
+			# Re-enable collision if its disabled it on death
 			rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
 			rock.get_node_or_null("CollisionShape3D").disabled = false
 			
@@ -77,7 +77,7 @@ func spawn_alien():
 		if not alien.visible:
 			alien.visible = true
 			
-			# Re-enable collision if you disabled it on death
+			# Re-enable collision if its disabled it on death
 			alien.get_node("HitboxComponent/CollisionShape3D").disabled = false
 			alien.get_node_or_null("CollisionShape3D").disabled = false
 			

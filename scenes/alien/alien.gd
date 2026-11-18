@@ -1,4 +1,5 @@
 extends CharacterBody3D
+class_name Alien
 
 @export var acceleration := 25.0
 
@@ -37,8 +38,13 @@ func _ready() -> void:
 		green_rock.visible = false
 	
 		# Disable collision shape on start
-		green_rock.get_node("CollisionShape3D").disabled = true
-		green_rock.get_node("HitboxComponent/CollisionShape3D").disabled = true
+		var col_shape: CollisionShape3D = green_rock.get_node("CollisionShape3D")
+		if col_shape:
+			col_shape.disabled = true
+
+		var hitbox_comp_col_shape: CollisionShape3D = green_rock.get_node("HitboxComponent/CollisionShape3D")
+		if hitbox_comp_col_shape:
+			hitbox_comp_col_shape.disabled = true
 		
 		# add pre-instantiated g_rocks to scene
 		get_tree().current_scene.add_child(green_rock)
@@ -78,10 +84,15 @@ func place_rock() -> bool:
 		if not g_rock.visible:
 			g_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
 			g_rock.visible = true
+
+			var col_shape: CollisionShape3D = g_rock.get_node("CollisionShape3D")
+			if col_shape:
+				col_shape.disabled = false
 			
-			g_rock.get_node("CollisionShape3D").disabled = false
-			g_rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
-				
+			var hitbox_col: CollisionShape3D = g_rock.get_node("HitboxComponent/CollisionShape3D")
+			if hitbox_col:
+				hitbox_col.disabled = false
+
 			var health_comp: HealthComponent = g_rock.get_node_or_null("HealthComponent")
 			if health_comp:
 				health_comp.health = health_comp.MAX_HEALTH

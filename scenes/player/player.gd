@@ -29,6 +29,11 @@ var broke_rock := false
 var max_popup_triggered := false
 
 func _ready() -> void:
+	stats = Stats.load_stats()
+	print("Loaded player level: ", stats.level)
+	
+	levelbar.value = stats.level
+	
 	if OS.has_feature("pc"):
 		touch_controls.hide()
 	if OS.has_feature("mobile"):
@@ -90,6 +95,7 @@ func _physics_process(delta: float) -> void:
 						var alien = get_tree().current_scene.get_node_or_null("Alien")
 						if alien:
 							alien.placed_rocks -= 1
+
 					if ht_hitbox_component.health_component.health <= 0.0 \
 							and ht_hitbox_component.get_parent() is GreenRock \
 							or ht_hitbox_component.health_component.health <= 0.0 \
@@ -99,7 +105,7 @@ func _physics_process(delta: float) -> void:
 					push_error("ht_hitbox_component not found!")
 			else:
 				push_error("hit_rock not found!")
-				
+
 	if broke_rock:
 		handle_levelup()
 		broke_rock = false
@@ -110,6 +116,7 @@ func handle_levelup():
 		return
 	
 	stats.level += 1.0
+	stats.save()
 	levelbar.value = stats.level
 	print("level up %s" % stats.level)
 	
@@ -125,3 +132,9 @@ func show_max_level_popup():
 
 func _on_health_comp_health_changed(new_health: float):
 	healthbar.value = new_health
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		if stats:
+			stats.save()
+		get_tree().quit()
