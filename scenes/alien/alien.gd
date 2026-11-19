@@ -31,12 +31,12 @@ var is_dangerous_rain_triggered := false
 
 func _ready() -> void:
 	player = get_tree().current_scene.get_node_or_null("Player")
-	
+
 	# Pre-instantiate Green Rocks and hide them
 	for i in range(MAX_GREEN_ROCKS):
 		var green_rock = GREEN_ROCK.instantiate() as GreenRock
 		green_rock.visible = false
-	
+
 		# Disable collision shape on start
 		var col_shape: CollisionShape3D = green_rock.get_node("CollisionShape3D")
 		if col_shape:
@@ -45,7 +45,7 @@ func _ready() -> void:
 		var hitbox_comp_col_shape: CollisionShape3D = green_rock.get_node("HitboxComponent/CollisionShape3D")
 		if hitbox_comp_col_shape:
 			hitbox_comp_col_shape.disabled = true
-		
+
 		# add pre-instantiated g_rocks to scene
 		get_tree().current_scene.add_child(green_rock)
 		# fill pool
@@ -88,7 +88,7 @@ func place_rock() -> bool:
 			var col_shape: CollisionShape3D = g_rock.get_node("CollisionShape3D")
 			if col_shape:
 				col_shape.disabled = false
-			
+
 			var hitbox_col: CollisionShape3D = g_rock.get_node("HitboxComponent/CollisionShape3D")
 			if hitbox_col:
 				hitbox_col.disabled = false
@@ -96,13 +96,13 @@ func place_rock() -> bool:
 			var health_comp: HealthComponent = g_rock.get_node_or_null("HealthComponent")
 			if health_comp:
 				health_comp.health = health_comp.MAX_HEALTH
-				
+
 			return true # Successfully placed a rock!
-			
+
 	# If the loop finishes without finding an inactive rock:
 	print("Max green rocks reached! Alien cannot place more.")
 	return false # Pool is full, nothing placed
-			
+
 func _on_start_move_timer_timeout() -> void:
 	if not disabled:
 		random_dir = directions.pick_random()
@@ -112,27 +112,27 @@ func _on_start_move_timer_timeout() -> void:
 func _on_stop_vel_timer_timeout() -> void:
 	if not disabled:
 		velocity = Vector3.ZERO
-		
+
 		# Only increment and print if place_rock() actually succeeded!
 		if place_rock():
 			placed_rocks += 1
 			print("Alien placed rocks: %s" % placed_rocks)
-			
+
 		start_move_timer.start()
 		
 func check_rain_trigger():
 	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
 		is_dangerous_rain_triggered = true # Prevents it from running every frame!
-		
+
 		for i in range(50):
 			var dangerous_object = DANGEROUS_OBJECT.instantiate()
-			
+
 			# Scatter them randomly around the sky above the alien
 			var random_offset := Vector3(randf_range(-15.0, 15.0), randf_range(15.0, 20.0), randf_range(-15.0, 15.0))
 			dangerous_object.position = Vector3(0, 15, 0) + random_offset
-			
-			get_tree().current_scene.add_child(dangerous_object)
-			
+
+			add_child(dangerous_object)
+
 			# This runs in the background and destroys this specific object after 5 seconds
 			create_tween().tween_callback(dangerous_object.queue_free).set_delay(5.0)
 
@@ -142,12 +142,12 @@ func _on_rain_d_object_timer_timeout() -> void:
 	if placed_rocks >= 10:
 		for i in range(50):
 			var dangerous_object = DANGEROUS_OBJECT.instantiate()
-			
+
 			# Scatter them randomly around the sky above the alien
 			var random_offset := Vector3(randf_range(-150.0, 150.0), randf_range(15.0, 20.0), randf_range(-150.0, 150.0))
 			dangerous_object.position = Vector3(0, 15, 0) + random_offset
-			
-			get_tree().current_scene.add_child(dangerous_object)
+
+			add_child(dangerous_object)
 			
 			# This runs in the background and destroys this specific object after 5 seconds
 			create_tween().tween_callback(dangerous_object.queue_free).set_delay(5.0)
