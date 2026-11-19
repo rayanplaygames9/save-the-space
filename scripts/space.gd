@@ -18,7 +18,7 @@ func _ready() -> void:
 	for i in range(TOTAL_ROCKS):
 		var rock = ROCK.instantiate()
 		rock.visible = false
-		get_tree().current_scene.add_child(rock)
+		add_child(rock)
 		
 		rock.get_node("HitboxComponent/CollisionShape3D").disabled = true
 		rock.get_node("CollisionShape3D").disabled = true
@@ -33,7 +33,7 @@ func _ready() -> void:
 		alien.set_process(false)
 		alien.disabled = true
 		
-		get_tree().current_scene.add_child(alien)
+		add_child(alien)
 		
 		alien.get_node("CollisionShape3D").disabled = true
 		alien.get_node("HitboxComponent/CollisionShape3D").disabled = true
