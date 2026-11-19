@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bm01fxn8sn726"]
+
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1675153710]
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=961827377]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
