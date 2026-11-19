@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bm01fxn8sn726"]
 
-[node name="CanvasLayer" type="CanvasLayer" unique_id=1675153710]
+[node name="ShopUI" type="CanvasLayer" unique_id=1675153710]
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=961827377]
 anchors_preset = 15
