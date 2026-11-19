@@ -1,10 +1,40 @@
-[gd_scene format=3 uid="uid://bm01fxn8sn726"]
+[gd_scene format=3 uid="uid://lr3w882bgscv"]
 
 [node name="ShopUI" type="CanvasLayer" unique_id=1675153710]
 
-[node name="PanelContainer" type="PanelContainer" parent="." unique_id=961827377]
+[node name="Panel" type="Panel" parent="." unique_id=1214581650]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel" unique_id=1532576458]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Shop"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UMPBtn" type="Button" parent="Panel" unique_id=897992843]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -65.5
+offset_right = 169.0
+offset_bottom = 65.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
+text = "UMP"
