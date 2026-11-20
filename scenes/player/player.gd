@@ -29,6 +29,7 @@ class_name Player
 @onready var touch_controls: Control = %TouchControls
 @onready var shop_ui: CanvasLayer = $UI/ShopUI
 @onready var d_45_raycast: RayCast3D = $Head/Camera3D/D45Raycast
+@onready var d_45_sfx: AudioStreamPlayer = $d45sfx
 
 var hover_time := 0.0
 var broke_rock := false
@@ -180,6 +181,7 @@ func _hit_with_axe():
 		
 func _hit_with_d45():
 	anim_player.play("hit_d45")
+	d_45_sfx.play()
 	
 	attack_damage = 100.0
 	
