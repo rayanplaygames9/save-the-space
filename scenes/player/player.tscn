@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dtenj2cguktbd" path="res://assets/icons/axe_icon.png" id="10_fm80t"]
 [ext_resource type="Script" uid="uid://dolia6wvcbmbg" path="res://scripts/weapons_manager.gd" id="10_h17s1"]
 [ext_resource type="Texture2D" uid="uid://4wikcwke07ey" path="res://assets/icons/d45_icon.png" id="11_gx1jg"]
+[ext_resource type="AudioStream" uid="uid://ri5n2fcpdt6x" path="res://assets/sfx/pump-shotgun-fortnite-loud (1).mp3" id="13_gx1jg"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_tapir"]
 
@@ -447,5 +448,8 @@ texture = ExtResource("11_gx1jg")
 
 [node name="WeaponsManager" type="Node" parent="." unique_id=2062686908]
 script = ExtResource("10_h17s1")
+
+[node name="d45sfx" type="AudioStreamPlayer" parent="." unique_id=64582734]
+stream = ExtResource("13_gx1jg")
 
 [connection signal="pressed" from="UI/ShopUI/Panel/D45Btn" to="UI/ShopUI" method="_on_d_45_btn_pressed"]
