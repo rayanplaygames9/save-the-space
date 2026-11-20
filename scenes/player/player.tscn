@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://cmh6mc1lufhvb" path="res://scenes/components/hitbox_component.tscn" id="3_lvxji"]
 [ext_resource type="Texture2D" uid="uid://oo4ekd06bk0h" path="res://assets/UI-TOUCH-CONTROLS/Extra/Default/icon_arrow_up_light.png" id="5_75vfm"]
 [ext_resource type="Texture2D" uid="uid://dmev8l0r7bqu" path="res://assets/UI-TOUCH-CONTROLS/Extra/Default/icon_arrow_down_light.png" id="6_0owmy"]
-[ext_resource type="Script" uid="uid://bafgcep2bqpcn" path="res://scenes/UI/shop_ui.gd" id="8_5gtgg"]
 [ext_resource type="PackedScene" uid="uid://c8qbyjm7vhxar" path="res://assets/models/d-45.glb" id="9_h17s1"]
 [ext_resource type="Texture2D" uid="uid://dtenj2cguktbd" path="res://assets/icons/axe_icon.png" id="10_fm80t"]
 [ext_resource type="Script" uid="uid://dolia6wvcbmbg" path="res://scripts/weapons_manager.gd" id="10_h17s1"]
@@ -371,48 +370,6 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_hk6ki")
 max_value = 50.0
 show_percentage = false
 
-[node name="ShopUI" type="CanvasLayer" parent="UI" unique_id=1675153710 node_paths=PackedStringArray("player")]
-visible = false
-script = ExtResource("8_5gtgg")
-player = NodePath("../..")
-
-[node name="Panel" type="Panel" parent="UI/ShopUI" unique_id=1214581650]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="UI/ShopUI/Panel" unique_id=1532576458]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 23.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 64
-text = "Shop"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="D45Btn" type="Button" parent="UI/ShopUI/Panel" unique_id=897992843]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -169.0
-offset_top = -65.5
-offset_right = 169.0
-offset_bottom = 65.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 64
-text = "D-45"
-
 [node name="HotbarUI" type="HBoxContainer" parent="UI" unique_id=1287115328]
 unique_name_in_owner = true
 anchors_preset = 7
@@ -451,5 +408,3 @@ script = ExtResource("10_h17s1")
 
 [node name="d45sfx" type="AudioStreamPlayer" parent="." unique_id=64582734]
 stream = ExtResource("13_gx1jg")
-
-[connection signal="pressed" from="UI/ShopUI/Panel/D45Btn" to="UI/ShopUI" method="_on_d_45_btn_pressed"]

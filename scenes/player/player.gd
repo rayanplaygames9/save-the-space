@@ -27,7 +27,6 @@ class_name Player
 @onready var levelbar: ProgressBar = %Levelbar
 @onready var maxlevelhit_label: Label = %MAXLEVELHITLabel
 @onready var touch_controls: Control = %TouchControls
-@onready var shop_ui: CanvasLayer = $UI/ShopUI
 @onready var d_45_raycast: RayCast3D = $Head/Camera3D/D45Raycast
 @onready var d_45_sfx: AudioStreamPlayer = $d45sfx
 
@@ -66,9 +65,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if event.is_action_pressed("left_mouse"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		
-	if event.is_action_pressed("toggle_shop"):
-		toggle_shop()
 
 func _physics_process(delta: float) -> void:
 	# Track elapsed time for the smooth sine wave
@@ -242,10 +238,3 @@ func _notification(what: int) -> void:
 		if stats:
 			stats.save()
 		get_tree().quit()
-
-func toggle_shop():
-	shop_ui.visible = not shop_ui.visible
-	if shop_ui.visible:
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
