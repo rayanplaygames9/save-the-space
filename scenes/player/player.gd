@@ -182,7 +182,7 @@ func _hit_with_axe():
 func _hit_with_d45():
 	anim_player.play("hit_d45")
 	d_45_sfx.play()
-	
+
 	attack_damage = 100.0
 	
 	if not d_45_raycast.is_colliding():
