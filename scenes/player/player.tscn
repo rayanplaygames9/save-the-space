@@ -7,6 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://cmh6mc1lufhvb" path="res://scenes/components/hitbox_component.tscn" id="3_lvxji"]
 [ext_resource type="Texture2D" uid="uid://oo4ekd06bk0h" path="res://assets/UI-TOUCH-CONTROLS/Extra/Default/icon_arrow_up_light.png" id="5_75vfm"]
 [ext_resource type="Texture2D" uid="uid://dmev8l0r7bqu" path="res://assets/UI-TOUCH-CONTROLS/Extra/Default/icon_arrow_down_light.png" id="6_0owmy"]
+[ext_resource type="Script" uid="uid://bafgcep2bqpcn" path="res://scenes/UI/shop_ui.gd" id="8_5gtgg"]
+[ext_resource type="PackedScene" uid="uid://c8qbyjm7vhxar" path="res://assets/models/d-45.glb" id="9_h17s1"]
+[ext_resource type="Texture2D" uid="uid://dtenj2cguktbd" path="res://assets/icons/axe_icon.png" id="10_fm80t"]
+[ext_resource type="Script" uid="uid://dolia6wvcbmbg" path="res://scripts/weapons_manager.gd" id="10_h17s1"]
+[ext_resource type="Texture2D" uid="uid://4wikcwke07ey" path="res://assets/icons/d45_icon.png" id="11_gx1jg"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_tapir"]
 
@@ -82,6 +87,18 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector3(0, -3.1415925, 0)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Head/Camera3D/d-45:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0.44845378, -0.19659424, -0.7298006)]
+}
 
 [sub_resource type="Animation" id="Animation_75vfm"]
 resource_name = "hit_axe"
@@ -111,10 +128,27 @@ tracks/1/keys = {
 "values": [Vector3(0, -3.1415925, 0), Vector3(0.61923134, -3.1415925, 1.0762214e-07), Vector3(0, -3.1415925, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_fm80t"]
+resource_name = "hit_d45"
+length = 0.15
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Head/Camera3D/d-45:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06666667, 0.15),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0.44845378, -0.19659424, -0.7298006), Vector3(0.44845378, -0.19659424, -0.57508564), Vector3(0.44845378, -0.19659424, -0.7298006)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0owmy"]
 _data = {
 &"RESET": SubResource("Animation_p47bc"),
-&"hit_axe": SubResource("Animation_75vfm")
+&"hit_axe": SubResource("Animation_75vfm"),
+&"hit_d45": SubResource("Animation_fm80t")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p41vm"]
@@ -151,7 +185,7 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[node name="Player" type="CharacterBody3D" unique_id=645777256 node_paths=PackedStringArray("health_component")]
+[node name="Player" type="CharacterBody3D" unique_id=645777256 node_paths=PackedStringArray("health_component", "weapons_manager", "d45_node", "axe_node")]
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_8afob")
@@ -159,6 +193,9 @@ down_strength = 2.0
 gravity = 1.0
 stats = ExtResource("2_0owmy")
 health_component = NodePath("HealthComponent")
+weapons_manager = NodePath("WeaponsManager")
+d45_node = NodePath("Head/Camera3D/d-45")
+axe_node = NodePath("Head/Camera3D/AxeModelWeapon")
 hover_speed = 5.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1413528908]
@@ -172,7 +209,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7938731, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=861874276]
 
-[node name="WeaponRaycast" type="RayCast3D" parent="Head/Camera3D" unique_id=456735135]
+[node name="AxeRaycast" type="RayCast3D" parent="Head/Camera3D" unique_id=456735135]
 target_position = Vector3(0, 0, -2)
 collision_mask = 12
 
@@ -181,6 +218,14 @@ transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0.86
 
 [node name="Cylinder" type="MeshInstance3D" parent="Head/Camera3D/AxeModelWeapon" unique_id=1520731207]
 mesh = SubResource("ArrayMesh_75vfm")
+
+[node name="d-45" parent="Head/Camera3D" unique_id=834699188 instance=ExtResource("9_h17s1")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0.44845378, -0.19659424, -0.7298006)
+
+[node name="D45Raycast" type="RayCast3D" parent="Head/Camera3D" unique_id=1116130551]
+visible = false
+target_position = Vector3(0, 0, -150)
+collision_mask = 12
 
 [node name="HealthComponent" parent="." unique_id=3380568 instance=ExtResource("2_gmlin")]
 MAX_HEALTH = 100.0
@@ -223,8 +268,8 @@ unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -185.0
-offset_right = 185.0
+offset_left = -420.0
+offset_right = -50.0
 offset_bottom = 65.0
 grow_horizontal = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_p41vm")
@@ -233,8 +278,8 @@ value = 100.0
 show_percentage = false
 
 [node name="Label" type="Label" parent="UI" unique_id=865167729]
-offset_left = 313.0
-offset_right = 391.0
+offset_left = 78.0
+offset_right = 156.0
 offset_bottom = 63.0
 theme_override_font_sizes/font_size = 32
 text = "HP:"
@@ -277,10 +322,6 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -147.0
-offset_top = 40.0
-offset_right = -147.0
-offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 layout_direction = 2
@@ -315,19 +356,96 @@ action = "down_crouch"
 
 [node name="Levelbar" type="ProgressBar" parent="UI" unique_id=1757210696]
 unique_name_in_owner = true
-anchors_preset = 7
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -210.0
-offset_top = -79.0
-offset_right = 210.0
-offset_bottom = -28.0
+offset_left = 59.0
+offset_top = 8.0
+offset_right = 479.0
+offset_bottom = 59.0
 grow_horizontal = 2
-grow_vertical = 0
 layout_direction = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_k1nkd")
 theme_override_styles/fill = SubResource("StyleBoxFlat_hk6ki")
 max_value = 50.0
 show_percentage = false
+
+[node name="ShopUI" type="CanvasLayer" parent="UI" unique_id=1675153710 node_paths=PackedStringArray("player")]
+visible = false
+script = ExtResource("8_5gtgg")
+player = NodePath("../..")
+
+[node name="Panel" type="Panel" parent="UI/ShopUI" unique_id=1214581650]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI/ShopUI/Panel" unique_id=1532576458]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Shop"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="D45Btn" type="Button" parent="UI/ShopUI/Panel" unique_id=897992843]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -65.5
+offset_right = 169.0
+offset_bottom = 65.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
+text = "D-45"
+
+[node name="HotbarUI" type="HBoxContainer" parent="UI" unique_id=1287115328]
+unique_name_in_owner = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -412.00006
+offset_top = -403.00006
+offset_right = 409.99994
+offset_bottom = 261.99994
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.2, 0.2)
+pivot_offset = Vector2(0.5, 0.5)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="Slot1" type="PanelContainer" parent="UI/HotbarUI" unique_id=1169204192]
+modulate = Color(1, 1, 1, 0.5058824)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/HotbarUI/Slot1" unique_id=1647396882]
+layout_mode = 2
+texture = ExtResource("10_fm80t")
+
+[node name="Slot2" type="PanelContainer" parent="UI/HotbarUI" unique_id=269445050]
+modulate = Color(1, 1, 1, 0.5058824)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/HotbarUI/Slot2" unique_id=66644101]
+layout_mode = 2
+texture = ExtResource("11_gx1jg")
+
+[node name="WeaponsManager" type="Node" parent="." unique_id=2062686908]
+script = ExtResource("10_h17s1")
+
+[connection signal="pressed" from="UI/ShopUI/Panel/D45Btn" to="UI/ShopUI" method="_on_d_45_btn_pressed"]

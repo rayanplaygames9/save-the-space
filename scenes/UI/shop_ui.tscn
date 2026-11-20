@@ -1,6 +1,11 @@
 [gd_scene format=3 uid="uid://lr3w882bgscv"]
 
+[ext_resource type="Script" uid="uid://bafgcep2bqpcn" path="res://scenes/UI/shop_ui.gd" id="1_5tinp"]
+[ext_resource type="PackedScene" uid="uid://c8qbyjm7vhxar" path="res://assets/models/d-45.glb" id="2_smnh3"]
+
 [node name="ShopUI" type="CanvasLayer" unique_id=1675153710]
+script = ExtResource("1_5tinp")
+d45_scene = ExtResource("2_smnh3")
 
 [node name="Panel" type="Panel" parent="." unique_id=1214581650]
 anchors_preset = 15
@@ -23,7 +28,7 @@ text = "Shop"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="UMPBtn" type="Button" parent="Panel" unique_id=897992843]
+[node name="D45Btn" type="Button" parent="Panel" unique_id=897992843]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -37,4 +42,6 @@ offset_bottom = 65.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 64
-text = "UMP"
+text = "D-45"
+
+[connection signal="pressed" from="Panel/D45Btn" to="." method="_on_d_45_btn_pressed"]
