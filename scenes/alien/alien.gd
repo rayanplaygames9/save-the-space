@@ -84,6 +84,7 @@ func place_rock() -> bool:
 		if not g_rock.visible:
 			g_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
 			g_rock.visible = true
+			g_rock.get_node("SelfSFX").play()
 
 			var col_shape: CollisionShape3D = g_rock.get_node("CollisionShape3D")
 			if col_shape:

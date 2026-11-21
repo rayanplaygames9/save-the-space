@@ -47,6 +47,7 @@ func spawn_rock():
 	for rock in rocks:
 		if not rock.visible:
 			rock.visible = true
+			rock.get_node("SelfSFX").play()
 
 			# Re-enable collision if its disabled it on death
 			rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
@@ -76,6 +77,7 @@ func spawn_alien():
 	for alien in aliens:
 		if not alien.visible:
 			alien.visible = true
+			alien.get_node("ArrivalSFX").play()
 
 			# Re-enable collision if its disabled it on death
 			alien.get_node("HitboxComponent/CollisionShape3D").disabled = false

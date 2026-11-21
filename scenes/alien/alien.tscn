@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://6gffs515vabc" path="res://scenes/alien/alien.gd" id="1_vdrsh"]
 [ext_resource type="PackedScene" uid="uid://c8ncglqjiyb73" path="res://scenes/components/health_component.tscn" id="2_y7hky"]
 [ext_resource type="PackedScene" uid="uid://cmh6mc1lufhvb" path="res://scenes/components/hitbox_component.tscn" id="3_6nl3j"]
+[ext_resource type="AudioStream" uid="uid://dvfc6ryjrhfa2" path="res://assets/sfx/alien-arrival-sound.mp3" id="4_6nl3j"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k1nkd"]
 albedo_color = Color(0.18, 1, 0.4123333, 1)
@@ -58,6 +59,9 @@ one_shot = true
 [node name="RainDObjectTimer" type="Timer" parent="." unique_id=1899690484]
 wait_time = 2.0
 autostart = true
+
+[node name="ArrivalSFX" type="AudioStreamPlayer" parent="." unique_id=1832586424]
+stream = ExtResource("4_6nl3j")
 
 [connection signal="timeout" from="StartMoveTimer" to="." method="_on_start_move_timer_timeout"]
 [connection signal="timeout" from="StopVelTimer" to="." method="_on_stop_vel_timer_timeout"]

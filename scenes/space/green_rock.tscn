@@ -67,3 +67,4 @@ shape = SubResource("ConvexPolygonShape3D_ktq5x")
 
 [node name="SelfSFX" type="AudioStreamPlayer3D" parent="." unique_id=1545288256]
 stream = ExtResource("4_sijna")
+volume_db = 3.0

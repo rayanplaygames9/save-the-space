@@ -176,7 +176,9 @@ func _hit_with_axe():
 			
 	if health <= 0.0 and (rock_parent is GreenRock or rock_parent is NormalRock):
 		broke_rock = true
-		
+	if hit_rock is GreenRock or hit_rock is NormalRock:
+		hit_rock.get_node("SelfSFX").play()
+
 func _hit_with_d45():
 	anim_player.play("hit_d45")
 	d_45_sfx.play()
@@ -211,6 +213,9 @@ func _hit_with_d45():
 			
 	if health <= 0.0 and (rock_parent is GreenRock or rock_parent is NormalRock):
 		broke_rock = true
+		
+	if hit_rock is GreenRock or hit_rock is NormalRock:
+		hit_rock.get_node("SelfSFX").play()
 
 func handle_levelup():
 	# If we are already maxed out, don't try to level up further
