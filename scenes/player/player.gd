@@ -29,6 +29,7 @@ class_name Player
 @onready var touch_controls: Control = %TouchControls
 @onready var d_45_raycast: RayCast3D = $Head/Camera3D/D45Raycast
 @onready var d_45_sfx: AudioStreamPlayer = $d45sfx
+@onready var axe_sfx: AudioStreamPlayer3D = $AxeSFX
 
 var hover_time := 0.0
 var broke_rock := false
@@ -141,6 +142,7 @@ func _physics_process(delta: float) -> void:
 
 func _hit_with_axe():
 	anim_player.play("hit_axe")
+	axe_sfx.play()
 
 	# 👇 Calculate damage on the fly based on current level!
 	# Gentle curve that grows slowly and hits 50+ damage around level 45-48
