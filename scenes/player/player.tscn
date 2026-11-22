@@ -446,6 +446,27 @@ theme_override_colors/font_color = Color(1, 0.14999998, 0.14999998, 1)
 theme_override_font_sizes/font_size = 32
 text = "Space is in danger, break the alien rocks to make it safe"
 
+[node name="DangerRainLabel" type="Label" parent="UI" unique_id=848407103]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -538.5
+offset_top = -67.0
+offset_right = 538.5
+offset_bottom = 67.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.089999974, 0.089999974, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+text = "Warning: DANGER RAIN INCOMING"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="WeaponsManager" type="Node" parent="." unique_id=2062686908]
 script = ExtResource("10_h17s1")
 

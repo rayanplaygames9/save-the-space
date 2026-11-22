@@ -10,11 +10,13 @@ const MAX_ALIENS := 2
 
 ## variables
 var can_spawn_alien := true
-var alien_count := 0
 var rocks: Array = []
 var aliens: Array = []
+var player: Player
 
 func _ready() -> void:
+	player = get_tree().current_scene.get_node("Player")
+
 	for i in range(TOTAL_ROCKS):
 		var rock = ROCK.instantiate()
 		rock.visible = false
@@ -39,6 +41,16 @@ func _ready() -> void:
 		alien.get_node("HitboxComponent/CollisionShape3D").disabled = true
 
 		aliens.append(alien)
+
+func _process(_delta: float) -> void:
+	for alien in aliens:
+		if alien:
+			if alien.placed_rocks == 8:
+				player.get_node("UI/DangerRainLabel").show()
+				$DangerSFX.play()
+				await get_tree().create_timer(3.0).timeout
+				$DangerSFX.stop()
+				player.get_node("UI/DangerRainLabel").hide()
 
 func spawn_rock():
 	var spawned := false

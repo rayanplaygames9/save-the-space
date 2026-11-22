@@ -125,7 +125,7 @@ func check_rain_trigger():
 	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
 		is_dangerous_rain_triggered = true # Prevents it from running every frame!
 
-		for i in range(50):
+		for i in range(1):
 			var dangerous_object = DANGEROUS_OBJECT.instantiate()
 
 			# Scatter them randomly around the sky above the alien

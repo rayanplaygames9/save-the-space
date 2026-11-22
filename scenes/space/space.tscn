@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dj8kvfp3j7x3s" path="res://scripts/space.gd" id="1_x217o"]
 [ext_resource type="PackedScene" uid="uid://b6kljbc0o1l5s" path="res://scenes/player/player.tscn" id="2_ugvpa"]
 [ext_resource type="PackedScene" uid="uid://c26ques8l5dgn" path="res://scenes/space/earth.tscn" id="4_718x5"]
+[ext_resource type="AudioStream" uid="uid://bkvww42x03xef" path="res://assets/sfx/alarm-danger-danger.mp3" id="5_0a2q3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_p41vm"]
 sky_top_color = Color(0, 0, 0, 1)
@@ -44,6 +45,9 @@ autostart = true
 
 [node name="earth" parent="." unique_id=106238960 instance=ExtResource("4_718x5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.45358, 0, 24.129625)
+
+[node name="DangerSFX" type="AudioStreamPlayer" parent="." unique_id=1806471896]
+stream = ExtResource("5_0a2q3")
 
 [connection signal="timeout" from="SpawnRockTimer" to="." method="_on_spawn_rock_timer_timeout"]
 [connection signal="timeout" from="SpawnAlienTimer" to="." method="_on_spawn_alien_timer_timeout"]
