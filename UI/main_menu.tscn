@@ -2,6 +2,12 @@
 
 [ext_resource type="Script" uid="uid://byn0o05k4ekc3" path="res://UI/main_menu.gd" id="1_p8ccj"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_tapir"]
+font_size = 40
+font_color = Color(0.015686275, 0, 0.69411767, 1)
+outline_size = 13
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p8ccj"]
 bg_color = Color(0.19647163, 0.16761822, 0.76619154, 1)
 border_width_left = 5
@@ -133,6 +139,13 @@ grow_vertical = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1000, 550)
 layout_mode = 2
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1312751486]
+layout_mode = 2
+text = "Save the Space"
+label_settings = SubResource("LabelSettings_tapir")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HostBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=851034705]
 unique_name_in_owner = true

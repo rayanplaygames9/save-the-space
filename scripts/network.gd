@@ -139,3 +139,13 @@ func get_local_player() -> Player:
 		if p is Player and p.is_multiplayer_authority():
 			return p
 	return null
+
+func play_offline() -> void:
+	is_host = true
+	# explicit offline peer, so any leftover connection from earlier is cleared
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	get_tree().change_scene_to_file(GAME_SCENE)
+
+func leave_game() -> void:
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()  # close any connection
+	get_tree().change_scene_to_file("res://UI/main_menu.tscn")  # change back to main menu

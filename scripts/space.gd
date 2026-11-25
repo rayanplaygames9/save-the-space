@@ -20,6 +20,7 @@ var player: Player
 ## onready variables
 @onready var players_container: Node3D = $Players
 @onready var rocks_container: Node3D = $Rocks
+@onready var backto_menu_btn: Button = %BacktoMenuBtn
 
 func _ready() -> void:
 	if multiplayer.is_server():
@@ -29,7 +30,12 @@ func _ready() -> void:
 		_client_loaded.rpc_id(1) # tell the host "I'm ready"
 
 	player = Network.get_local_player()
-
+	
+	backto_menu_btn.pressed.connect(func():
+		print("Back to menu!")
+		Network.leave_game()
+	)
+	
 	for i in range(MAX_ALIENS):
 		var alien = ALIEN.instantiate()
 		alien.visible = false
@@ -43,6 +49,14 @@ func _ready() -> void:
 		alien.get_node("HitboxComponent/CollisionShape3D").disabled = true
 
 		aliens.append(alien)
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("show_options"):
+		$UI.visible = not $UI.visible
+		if $UI.visible:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _process(_delta: float) -> void:
 	for alien in aliens:

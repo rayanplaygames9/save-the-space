@@ -9,11 +9,13 @@ extends Control
 @onready var copy_btn: Button = %CopyBtn
 @onready var status_label: Label = %StatusLabel
 @onready var start_game_btn: Button = %StartGameBtn
+@onready var play_offline_btn: Button = %PlayOfflineBtn
 
 func _ready() -> void:
 	host_btn.pressed.connect(_on_host_pressed)
 	join_btn.pressed.connect(_on_join_pressed)
 	copy_btn.pressed.connect(_on_copy_pressed)
+	play_offline_btn.pressed.connect(func(): Network.play_offline())
 	code_input.text_submitted.connect(func(_t): _on_join_pressed())
 	code_input.text_changed.connect(_on_code_changed)
 	join_btn.disabled = true
