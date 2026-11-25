@@ -4,7 +4,10 @@ class_name HealthComponent
 signal health_changed(new_health: float)
 
 @export var MAX_HEALTH: float = 50.0
-var health: float
+@export var health: float = 0.0:
+	set(value):
+		health = value
+		health_changed.emit(health)
 
 @onready var hitbox_component: HitboxComponent = $"../HitboxComponent"
 
@@ -12,25 +15,18 @@ func _ready() -> void:
 	health = MAX_HEALTH
 	
 func damage(attack: Attack):
+	if not multiplayer.is_server():
+		return
 	health -= attack.attack_damage
-	health_changed.emit(health)
-	if get_parent() is Player:
-		print("Player health: %s" % health)
 
 	if health <= 0.0:
-		respawn()
+		die_or_respawn()
 			
-func respawn():
-	if get_parent() is Player:
-		get_tree().reload_current_scene.call_deferred()
+func die_or_respawn():
+	var parent := get_parent()
+	if parent is Player:
+		health = MAX_HEALTH
+		var player: Player = parent
+		player.respawn.rpc_id(parent.get_multiplayer_authority(), Vector3.ZERO)
 	else:
-		# Instead of destroying it, hide it and disable it for the pool!
-		get_parent().visible = false
-		get_parent().set_physics_process(false)
-		get_parent().set_process(false)
-		
-		# If your rock has a CollisionShape3D or Area3D/RigidBody3D, 
-		# make sure to disable its collision so the player can't hit an invisible rock:
-		hitbox_component.get_node("CollisionShape3D").disabled = true
-		get_parent().get_node_or_null("CollisionShape3D").disabled = true
-		
+		parent.queue_free()

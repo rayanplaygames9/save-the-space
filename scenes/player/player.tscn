@@ -212,7 +212,18 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[node name="Player" type="CharacterBody3D" unique_id=645777256 node_paths=PackedStringArray("health_component", "weapons_manager", "d45_node", "axe_node")]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gx1jg"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("Head:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[node name="Player" type="CharacterBody3D" unique_id=645777256 node_paths=PackedStringArray("health_component", "weapons_manager", "d45_node", "axe_node") groups=["players"]]
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_8afob")
@@ -242,6 +253,7 @@ collision_mask = 12
 
 [node name="AxeModelWeapon" type="Node3D" parent="Head/Camera3D" unique_id=1267943854]
 transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0.8616979, -0.5028403, -0.6848409)
+visible = false
 
 [node name="Cylinder" type="MeshInstance3D" parent="Head/Camera3D/AxeModelWeapon" unique_id=1520731207]
 mesh = SubResource("ArrayMesh_75vfm")
@@ -476,3 +488,6 @@ volume_db = -18.559
 
 [node name="AxeSFX" type="AudioStreamPlayer3D" parent="." unique_id=1861789778]
 stream = ExtResource("13_ugbui")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1049979517]
+replication_config = SubResource("SceneReplicationConfig_gx1jg")

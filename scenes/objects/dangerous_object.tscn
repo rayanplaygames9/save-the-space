@@ -11,6 +11,14 @@ material = SubResource("StandardMaterial3D_k1nkd")
 [sub_resource type="SphereShape3D" id="SphereShape3D_hk6ki"]
 radius = 0.851776
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_g3snp"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
 [node name="DangerousObject" type="Area3D" unique_id=1666177167]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 collision_layer = 16
@@ -23,5 +31,8 @@ mesh = SubResource("PrismMesh_tapir")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1209027403]
 shape = SubResource("SphereShape3D_hk6ki")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=786075587]
+replication_config = SubResource("SceneReplicationConfig_g3snp")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

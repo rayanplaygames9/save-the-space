@@ -36,7 +36,19 @@ var broke_rock := false
 var max_popup_triggered := false
 var current_hotbar_index := 0
 
+func _enter_tree() -> void:
+	var id := name.to_int()
+	set_multiplayer_authority(id, false) # false = only this node, not children
+	# the position synchronizer should still come from the owning client:
+	$MultiplayerSynchronizer.set_multiplayer_authority(id)  # use your node's real name
+
 func _ready() -> void:
+	if not is_multiplayer_authority():
+		$UI.hide()
+		$Head/Camera3D.current = false  # remote players must never take over your view
+		return
+	
+	$Head/Camera3D.current = true
 	stats = Stats.load_stats()
 	print("Loaded player level: ", stats.level)
 	
@@ -57,6 +69,8 @@ func _ready() -> void:
 	weapons_manager.weapons_disabled[axe_node] = true
 	
 func _unhandled_input(event: InputEvent) -> void:
+	if not is_multiplayer_authority(): return
+	
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
@@ -68,6 +82,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority(): return
+	
 	# Track elapsed time for the smooth sine wave
 	hover_time += delta * hover_speed
 	
@@ -91,26 +107,12 @@ func _physics_process(delta: float) -> void:
 	# -- HOTBAR SWITCHING --
 	# 1. EQUIPPING WEAPONS (it runs only when pressing 1 or 2)
 	# hotbar 1 (axe)
-	if Input.is_action_just_pressed("hotbar_1"):
-		if weapons_manager.weapons_disabled.get(d45_node, true) == false \
-				and weapons_manager.weapons_disabled.get(axe_node, true) == true:
-			current_hotbar_index = 0
-			d45_node.visible = false
-			axe_node.visible = true
-			weapons_manager.weapons_disabled[d45_node] = true
-			weapons_manager.weapons_disabled[axe_node] = false
-			print("Equipped axe | Hotbar index: " + str(current_hotbar_index))
+	if Input.is_action_just_pressed("hotbar_1") and current_hotbar_index != 0:
+		_equip.rpc(0)
 	
 	# hotbar 2 (d-45)
-	if Input.is_action_just_pressed("hotbar_2"):
-		if weapons_manager.weapons_disabled.get(d45_node, true) == true \
-				and weapons_manager.weapons_disabled.get(axe_node, true) == false:
-			current_hotbar_index = 1
-			d45_node.visible = true
-			axe_node.visible = false
-			weapons_manager.weapons_disabled[d45_node] = false
-			weapons_manager.weapons_disabled[axe_node] = true
-			print("Equipped d45 | Hotbar index: " + str(current_hotbar_index))
+	if Input.is_action_just_pressed("hotbar_2") and current_hotbar_index != 1:
+		_equip.rpc(1)
 			
 	# hotbar 3
 	# its empty so well just do nothing
@@ -141,8 +143,7 @@ func _physics_process(delta: float) -> void:
 		broke_rock = false
 
 func _hit_with_axe():
-	anim_player.play("hit_axe")
-	axe_sfx.play()
+	_play_attack.rpc("hit_axe")
 
 	# 👇 Calculate damage on the fly based on current level!
 	# Gentle curve that grows slowly and hits 50+ damage around level 45-48
@@ -161,27 +162,13 @@ func _hit_with_axe():
 		push_error("ht_hitbox_component not found!")
 		return
 
-	var attack = Attack.new()
-	attack.attack_damage = attack_damage
-	print("DEALT DAMAGE VALUE IS: ", attack.attack_damage) # <-- Add this line!
-	ht_hitbox_component.damage(attack)
+	_deal_damage(hit_rock, attack_damage)
 	
-	var health = ht_hitbox_component.health_component.health
-	var rock_parent = ht_hitbox_component.get_parent()
-	
-	if health <= 0.0 and rock_parent is GreenRock:
-		var alien = get_tree().current_scene.get_node("Alien")
-		if alien:
-			alien.placed_rocks -= 1
-			
-	if health <= 0.0 and (rock_parent is GreenRock or rock_parent is NormalRock):
-		broke_rock = true
 	if hit_rock is GreenRock or hit_rock is NormalRock:
 		hit_rock.get_node("SelfSFX").play()
 
 func _hit_with_d45():
-	anim_player.play("hit_d45")
-	d_45_sfx.play()
+	_play_attack.rpc("hit_d45")
 
 	attack_damage = 100.0
 	
@@ -198,21 +185,7 @@ func _hit_with_d45():
 		push_error("ht_hitbox_component not found!")
 		return
 
-	var attack = Attack.new()
-	attack.attack_damage = attack_damage
-	print("DEALT DAMAGE VALUE IS: ", attack.attack_damage) # <-- Add this line!
-	ht_hitbox_component.damage(attack)
-	
-	var health = ht_hitbox_component.health_component.health
-	var rock_parent = ht_hitbox_component.get_parent()
-	
-	if health <= 0.0 and rock_parent is GreenRock:
-		var alien = get_tree().current_scene.get_node("Alien")
-		if alien:
-			alien.placed_rocks -= 1
-			
-	if health <= 0.0 and (rock_parent is GreenRock or rock_parent is NormalRock):
-		broke_rock = true
+	_deal_damage(hit_rock, attack_damage)
 		
 	if hit_rock is GreenRock or hit_rock is NormalRock:
 		hit_rock.get_node("SelfSFX").play()
@@ -239,6 +212,77 @@ func show_max_level_popup():
 
 func _on_health_comp_health_changed(new_health: float):
 	healthbar.value = new_health
+
+@rpc("any_peer", "call_local", "reliable")
+func respawn(pos: Vector3) -> void:
+	var sender = multiplayer.get_remote_sender_id()
+	if sender != 0 and sender != 1:
+		return  # ignore anyone but the host
+	global_position = pos
+	velocity = Vector3.ZERO
+
+# Called by both weapons after a raycast hit (raycast stays on the client).
+func _deal_damage(target: Node, dmg: float) -> void:
+	if multiplayer.is_server():
+		_server_apply_damage(target.get_path(), dmg)
+	else:
+		_request_damage.rpc_id(1, target.get_path(), dmg)
+
+# Client -> host. "authority" works because the sender owns this Player node.
+@rpc("authority", "call_remote", "reliable")
+func _request_damage(target_path: NodePath, dmg: float) -> void:
+	_server_apply_damage(target_path, dmg)
+
+# Runs on the host only.
+func _server_apply_damage(target_path: NodePath, dmg: float) -> void:
+	var target := get_node_or_null(target_path)
+	if target == null:
+		return # already destroyed
+	var hitbox: HitboxComponent = target.get_node_or_null("HitboxComponent")
+	if hitbox == null:
+		return
+		
+	var attack := Attack.new()
+	attack.attack_damage = dmg
+	hitbox.damage(attack)
+	
+	var health := hitbox.health_component.health
+	var rock_parent := hitbox.get_parent()
+	
+	if health <= 0.0 and rock_parent is GreenRock:
+		var alien = get_tree().current_scene.get_node("Alien")
+		if alien:
+			alien.placed_rocks -= 1
+			
+	if health <= 0.0 and (rock_parent is GreenRock or rock_parent is NormalRock):
+		# tell the player who broke it, so THEY level up
+		if get_multiplayer_authority() == multiplayer.get_unique_id():
+			broke_rock = true
+		else:
+			_rock_broken.rpc_id(get_multiplayer_authority())
+
+# Host -> owning client.
+@rpc("any_peer", "call_remote", "reliable")
+func _rock_broken() -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return # only the host can tell us
+	broke_rock = true
+
+@rpc("authority", "call_local", "reliable")
+func _equip(index: int) -> void:
+	current_hotbar_index = index
+	axe_node.visible = (index == 0)
+	d45_node.visible = (index == 1)
+	weapons_manager.weapons_disabled[axe_node] = (index != 0)
+	weapons_manager.weapons_disabled[d45_node] = (index != 1)
+
+@rpc("authority", "call_local", "reliable")
+func _play_attack(anim_name: String) -> void:
+	anim_player.play(anim_name)
+	if anim_name == "hit_axe":
+		axe_sfx.play()
+	else:
+		d_45_sfx.play()
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
