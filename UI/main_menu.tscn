@@ -2,6 +2,116 @@
 
 [ext_resource type="Script" uid="uid://byn0o05k4ekc3" path="res://UI/main_menu.gd" id="1_p8ccj"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p8ccj"]
+bg_color = Color(0.19647163, 0.16761822, 0.76619154, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tk8dj"]
+bg_color = Color(0.4950719, 0.5763789, 0.988501, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d8nwk"]
+bg_color = Color(0.35733655, 0.42325324, 0.9716638, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4cwpn"]
+bg_color = Color(0.19607843, 0.16862746, 0.7647059, 0.5294118)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0.34901962)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f40uw"]
+bg_color = Color(0.14320838, 0.4103991, 0.6011374, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ctay"]
+bg_color = Color(0.14400001, 0.4100001, 0.6, 0.5411765)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ev3b6"]
+bg_color = Color(0.09269322, 0.29750535, 0.44120654, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k0a0m"]
+bg_color = Color(0.19647163, 0.16761822, 0.76619154, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2mudq"]
+bg_color = Color(0.4950719, 0.5763789, 0.988501, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cafmx"]
+bg_color = Color(0.35733655, 0.42325324, 0.9716638, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tcix6"]
+bg_color = Color(0.19607843, 0.16862746, 0.7647059, 0.5294118)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0.34901962)
+
+[sub_resource type="LabelSettings" id="LabelSettings_mmlvu"]
+font_size = 25
+font_color = Color(0, 0, 0, 1)
+outline_size = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mmlvu"]
+bg_color = Color(0.19647163, 0.16761822, 0.76619154, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aorne"]
+bg_color = Color(0.4950719, 0.5763789, 0.988501, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bpm4f"]
+bg_color = Color(0.35733655, 0.42325324, 0.9716638, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7137b"]
+bg_color = Color(0.19607843, 0.16862746, 0.7647059, 0.5294118)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0.34901962)
+
 [node name="MainMenu" type="Control" unique_id=2099839823]
 layout_mode = 3
 anchors_preset = 15
@@ -28,6 +138,10 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_p8ccj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tk8dj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_d8nwk")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_4cwpn")
 text = "Host Game"
 
 [node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1833284090]
@@ -39,6 +153,9 @@ theme_override_constants/separation = 25
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_f40uw")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_8ctay")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ev3b6")
 placeholder_text = "Type code to join here..."
 alignment = 1
 
@@ -46,6 +163,10 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_k0a0m")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_2mudq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cafmx")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_tcix6")
 text = "Join Game"
 
 [node name="CodeRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1730274347]
@@ -58,6 +179,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 text = "Code: "
+label_settings = SubResource("LabelSettings_mmlvu")
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -65,6 +187,10 @@ vertical_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aorne")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bpm4f")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_7137b")
 text = "Copy Code"
 
 [node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1927141732]
@@ -75,4 +201,18 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aorne")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bpm4f")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_7137b")
 text = "Start Game"
+
+[node name="PlayOfflineBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1780945465]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aorne")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bpm4f")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_7137b")
+text = "Play Offline"
