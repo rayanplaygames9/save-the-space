@@ -22,8 +22,47 @@ sky_material = SubResource("ProceduralSkyMaterial_p41vm")
 background_mode = 2
 sky = SubResource("Sky_ugvpa")
 
+[sub_resource type="LabelSettings" id="LabelSettings_tapir"]
+font_size = 32
+font_color = Color(0.2, 1, 1, 1)
+outline_size = 12
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p8ccj"]
+bg_color = Color(0.19647163, 0.16761822, 0.76619154, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tk8dj"]
+bg_color = Color(0.4950719, 0.5763789, 0.988501, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d8nwk"]
+bg_color = Color(0.35733655, 0.42325324, 0.9716638, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4cwpn"]
+bg_color = Color(0.19607843, 0.16862746, 0.7647059, 0.5294118)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 0.34901962)
+
 [node name="Space" type="Node3D" unique_id=751525319]
 script = ExtResource("1_x217o")
+player_scene = ExtResource("2_ugvpa")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1720483994]
 environment = SubResource("Environment_x217o")
@@ -31,9 +70,6 @@ environment = SubResource("Environment_x217o")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1588337152]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
-
-[node name="Player" parent="." unique_id=645777256 instance=ExtResource("2_ugvpa")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7022941, 0, 3.0592818)
 
 [node name="SpawnRockTimer" type="Timer" parent="." unique_id=1812926862]
 wait_time = 3.5
@@ -48,6 +84,67 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.45358, 0, 24.129625)
 
 [node name="DangerSFX" type="AudioStreamPlayer" parent="." unique_id=1806471896]
 stream = ExtResource("5_0a2q3")
+
+[node name="Players" type="Node3D" parent="." unique_id=520808394]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1344266908]
+_spawnable_scenes = PackedStringArray("uid://b6kljbc0o1l5s")
+spawn_path = NodePath("../Players")
+
+[node name="MultiplayerSpawner2" type="MultiplayerSpawner" parent="." unique_id=1931757328]
+_spawnable_scenes = PackedStringArray("uid://cnrrhibhfrfxq")
+spawn_path = NodePath("../Rocks")
+
+[node name="MultiplayerSpawner3" type="MultiplayerSpawner" parent="." unique_id=1676300666]
+_spawnable_scenes = PackedStringArray("uid://b07qvnwfs8w1n")
+spawn_path = NodePath("../GreenRocks")
+
+[node name="MultiplayerSpawner4" type="MultiplayerSpawner" parent="." unique_id=131432234]
+_spawnable_scenes = PackedStringArray("uid://cts34uc3idrbh")
+spawn_path = NodePath("../DangerousObjects")
+
+[node name="Rocks" type="Node3D" parent="." unique_id=833937943]
+
+[node name="GreenRocks" type="Node3D" parent="." unique_id=1162869833]
+
+[node name="DangerousObjects" type="Node3D" parent="." unique_id=200120424]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=449012484]
+visible = false
+
+[node name="CenterContainer" type="CenterContainer" parent="UI" unique_id=449592271]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = -49.5
+offset_right = 125.0
+offset_bottom = 49.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/CenterContainer" unique_id=1837145839]
+custom_minimum_size = Vector2(250, 68.75)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/CenterContainer/VBoxContainer" unique_id=963820647]
+layout_mode = 2
+text = "Back to menu?"
+label_settings = SubResource("LabelSettings_tapir")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BacktoMenuBtn" type="Button" parent="UI/CenterContainer/VBoxContainer" unique_id=1595427665]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_p8ccj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tk8dj")
+theme_override_styles/hover = SubResource("StyleBoxFlat_d8nwk")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_4cwpn")
+text = "Back to menu"
 
 [connection signal="timeout" from="SpawnRockTimer" to="." method="_on_spawn_rock_timer_timeout"]
 [connection signal="timeout" from="SpawnAlienTimer" to="." method="_on_spawn_alien_timer_timeout"]

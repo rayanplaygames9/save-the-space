@@ -2,5 +2,13 @@
 
 [ext_resource type="Script" uid="uid://bdkr8giu8hoea" path="res://scripts/health_component.gd" id="1_3uywa"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_2wcl1"]
+properties/0/path = NodePath(".:health")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
 [node name="HealthComponent" type="Node3D" unique_id=3380568]
 script = ExtResource("1_3uywa")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1331608335]
+replication_config = SubResource("SceneReplicationConfig_2wcl1")

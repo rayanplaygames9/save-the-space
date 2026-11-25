@@ -24,32 +24,8 @@ var directions := [
 var speed: float = 5.0
 var random_dir: Vector3
 static var placed_rocks := 0
-var player: Player
-var green_rock_pool: Array[GreenRock] = []
 var disabled := false
 var is_dangerous_rain_triggered := false
-
-func _ready() -> void:
-	player = get_tree().current_scene.get_node_or_null("Player")
-
-	# Pre-instantiate Green Rocks and hide them
-	for i in range(MAX_GREEN_ROCKS):
-		var green_rock = GREEN_ROCK.instantiate() as GreenRock
-		green_rock.visible = false
-
-		# Disable collision shape on start
-		var col_shape: CollisionShape3D = green_rock.get_node("CollisionShape3D")
-		if col_shape:
-			col_shape.disabled = true
-
-		var hitbox_comp_col_shape: CollisionShape3D = green_rock.get_node("HitboxComponent/CollisionShape3D")
-		if hitbox_comp_col_shape:
-			hitbox_comp_col_shape.disabled = true
-
-		# add pre-instantiated g_rocks to scene
-		get_tree().current_scene.add_child(green_rock)
-		# fill pool
-		green_rock_pool.append(green_rock)
 
 func _physics_process(delta: float) -> void:
 	if not disabled:
@@ -66,43 +42,32 @@ func _physics_process(delta: float) -> void:
 func _process(_delta: float) -> void:
 	if not disabled:
 		check_rain_trigger()
-
-		if placed_rocks >= 6:
-			var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
-			if player_danger_label:
-				player_danger_label.show()
-		else:
-			var player_danger_label = player.get_node_or_null("UI/SpaceDangerLabel")
-			if player_danger_label:
-				player_danger_label.hide()
+		
+		var local_player := Network.get_local_player()
+		if local_player == null:
+			return
+		var label := local_player.get_node_or_null("UI/SpaceDangerLabel")
+		if label:
+			label.visible = placed_rocks >= 6
 
 func place_rock() -> bool:
-	if disabled:
+	if disabled or not multiplayer.is_server():
 		return false
 
-	for g_rock in green_rock_pool:
-		if not g_rock.visible:
-			g_rock.position = position + Vector3(randf_range(-5.0, 5.5), 0, randf_range(-10.5, 2.0))
-			g_rock.visible = true
-			g_rock.get_node("SelfSFX").play()
+	var green_rocks_container = get_tree().current_scene.get_node("GreenRocks")
 
-			var col_shape: CollisionShape3D = g_rock.get_node("CollisionShape3D")
-			if col_shape:
-				col_shape.disabled = false
+	if green_rocks_container.get_child_count() >= MAX_GREEN_ROCKS:
+		print("Max rocks reached (%d). Cannot spawn any more." % MAX_GREEN_ROCKS)
+		return false
 
-			var hitbox_col: CollisionShape3D = g_rock.get_node("HitboxComponent/CollisionShape3D")
-			if hitbox_col:
-				hitbox_col.disabled = false
-
-			var health_comp: HealthComponent = g_rock.get_node_or_null("HealthComponent")
-			if health_comp:
-				health_comp.health = health_comp.MAX_HEALTH
-
-			return true # Successfully placed a rock!
-
-	# If the loop finishes without finding an inactive rock:
-	print("Max green rocks reached! Alien cannot place more.")
-	return false # Pool is full, nothing placed
+	var green_rock := GREEN_ROCK.instantiate() as GreenRock
+	green_rock.position = Vector3(
+		randf_range(-50.0, 50.0),
+		randf_range(-20.0, 20.0),
+		randf_range(-50.0, 50.0)
+	)
+	green_rocks_container.add_child(green_rock, true)
+	return true
 
 func _on_start_move_timer_timeout() -> void:
 	if not disabled:
@@ -121,34 +86,31 @@ func _on_stop_vel_timer_timeout() -> void:
 
 		start_move_timer.start()
 		
-func check_rain_trigger():
+func check_rain_trigger() -> void:
+	if not multiplayer.is_server():
+		return
 	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
-		is_dangerous_rain_triggered = true # Prevents it from running every frame!
-
-		for i in range(1):
-			var dangerous_object = DANGEROUS_OBJECT.instantiate()
-
-			# Scatter them randomly around the sky above the alien
-			var random_offset := Vector3(randf_range(-15.0, 15.0), randf_range(15.0, 20.0), randf_range(-15.0, 15.0))
-			dangerous_object.position = Vector3(0, 15, 0) + random_offset
-
-			add_child(dangerous_object)
-
-			# This runs in the background and destroys this specific object after 5 seconds
-			create_tween().tween_callback(dangerous_object.queue_free).set_delay(5.0)
-
+		is_dangerous_rain_triggered = true
+		_spawn_dangerous_object(15.0)
 		print("It's raining dangerous objects!")
 
+
 func _on_rain_d_object_timer_timeout() -> void:
+	if not multiplayer.is_server():
+		return
 	if placed_rocks >= 10:
 		for i in range(50):
-			var dangerous_object = DANGEROUS_OBJECT.instantiate()
+			_spawn_dangerous_object(150.0)
+			print("It's raining dangerous objects!")
 
-			# Scatter them randomly around the sky above the alien
-			var random_offset := Vector3(randf_range(-150.0, 150.0), randf_range(15.0, 20.0), randf_range(-150.0, 150.0))
-			dangerous_object.position = Vector3(0, 15, 0) + random_offset
-
-			add_child(dangerous_object)
-			
-			# This runs in the background and destroys this specific object after 5 seconds
-			create_tween().tween_callback(dangerous_object.queue_free).set_delay(5.0)
+func _spawn_dangerous_object(spread: float) -> void:
+	var container := get_tree().current_scene.get_node("DangerousObjects")
+	var obj := DANGEROUS_OBJECT.instantiate() as Node3D
+	var random_offset := Vector3(
+		randf_range(-spread, spread),
+		randf_range(15.0, 20.0),
+		randf_range(-spread, spread)
+	)
+	obj.position = Vector3(0, 15, 0) + random_offset
+	container.add_child(obj, true)  # spawner copies it to clients
+	create_tween().tween_callback(obj.queue_free).set_delay(5.0)  # host frees it, clients follow

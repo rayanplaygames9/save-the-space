@@ -5,8 +5,8 @@ const ROCK = preload("uid://cnrrhibhfrfxq")
 const ALIEN = preload("uid://b242ndeq5lfjs")
 
 ## constant variables
-const TOTAL_ROCKS := 100
 const MAX_ALIENS := 2
+const MAX_ROCKS := 100
 
 ## variables
 var can_spawn_alien := true
@@ -14,20 +14,28 @@ var rocks: Array = []
 var aliens: Array = []
 var player: Player
 
+## export variables
+@export var player_scene: PackedScene
+
+## onready variables
+@onready var players_container: Node3D = $Players
+@onready var rocks_container: Node3D = $Rocks
+@onready var backto_menu_btn: Button = %BacktoMenuBtn
+
 func _ready() -> void:
-	player = get_tree().current_scene.get_node("Player")
+	if multiplayer.is_server():
+		multiplayer.peer_disconnected.connect(_remove_player)
+		_add_player(1)
+	else:
+		_client_loaded.rpc_id(1) # tell the host "I'm ready"
 
-	for i in range(TOTAL_ROCKS):
-		var rock = ROCK.instantiate()
-		rock.visible = false
-		add_child(rock)
-
-		rock.get_node("HitboxComponent/CollisionShape3D").disabled = true
-		rock.get_node("CollisionShape3D").disabled = true
-
-		# Add each pre-instantiated rock into the array pool
-		rocks.append(rock)
-
+	player = Network.get_local_player()
+	
+	backto_menu_btn.pressed.connect(func():
+		print("Back to menu!")
+		Network.leave_game()
+	)
+	
 	for i in range(MAX_ALIENS):
 		var alien = ALIEN.instantiate()
 		alien.visible = false
@@ -42,46 +50,40 @@ func _ready() -> void:
 
 		aliens.append(alien)
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("show_options"):
+		$UI.visible = not $UI.visible
+		if $UI.visible:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 func _process(_delta: float) -> void:
 	for alien in aliens:
 		if alien:
 			if alien.placed_rocks == 8:
+				player = Network.get_local_player()
 				player.get_node("UI/DangerRainLabel").show()
 				$DangerSFX.play()
 				await get_tree().create_timer(3.0).timeout
 				$DangerSFX.stop()
 				player.get_node("UI/DangerRainLabel").hide()
 
-func spawn_rock():
-	var spawned := false
+func spawn_rock() -> void:
+	if not multiplayer.is_server():
+		return  # only the host spawns; clients receive them automatically
 
-	# Loop through the pool to find an available (hidden) rock
-	for rock in rocks:
-		if not rock.visible:
-			rock.visible = true
-			rock.get_node("SelfSFX").play()
+	if rocks_container.get_child_count() >= MAX_ROCKS:
+		print("Max rocks reached (%d). Cannot spawn any more." % MAX_ROCKS)
+		return
 
-			# Re-enable collision if its disabled it on death
-			rock.get_node("HitboxComponent/CollisionShape3D").disabled = false
-			rock.get_node_or_null("CollisionShape3D").disabled = false
-
-			# Reset health if needed via health component reference
-			var health_component: HealthComponent = rock.get_node_or_null("HealthComponent")
-			if health_component: health_component.health = health_component.MAX_HEALTH
-
-			# Randomized position variables
-			var rand_x := randf_range(-50.0, 50.0)
-			var rand_y := randf_range(-20.0, 20.0)
-			var rand_z := randf_range(-50.0, 50.0)
-
-			rock.position = Vector3(rand_x, rand_y, rand_z)
-
-			spawned = true
-			break # Found one, stop searching!
-
-	# If all 100 rocks are currently visible, 'spawned' stays false and nothing happens
-	if not spawned:
-		print("Max rocks reached (100). Cannot spawn any more.")
+	var rock := ROCK.instantiate() as NormalRock
+	rock.position = Vector3(
+		randf_range(-50.0, 50.0),
+		randf_range(-20.0, 20.0),
+		randf_range(-50.0, 50.0)
+	)
+	rocks_container.add_child(rock, true)
 
 func spawn_alien():
 	var spawned := false
@@ -125,3 +127,18 @@ func _on_spawn_rock_timer_timeout() -> void:
 
 func _on_spawn_alien_timer_timeout() -> void:
 	spawn_alien()
+
+@rpc("any_peer", "reliable")
+func _client_loaded() -> void:
+	if multiplayer.is_server():
+		_add_player(multiplayer.get_remote_sender_id())
+
+func _add_player(id: int) -> void:
+	var p := player_scene.instantiate()
+	p.name = str(id)  # the name is the owner's peer id
+	players_container.add_child(p, true)
+
+func _remove_player(id: int) -> void:
+	var p := players_container.get_node(str(id))
+	if p:
+		p.queue_free()
