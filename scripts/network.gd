@@ -5,6 +5,8 @@ signal room_ready(code: String)
 signal join_failed(reason: String)
 signal joined()
 
+const USE_LOCAL_ENET := false  # false = use Noray (room codes), true = local testing only
+
 # Check the netfox docs for the current public test instance.
 const NORAY_HOST := "tomfol.io"
 const NORAY_PORT := 8890
@@ -20,9 +22,13 @@ func _ready() -> void:
 	Noray.on_oid.connect(func(oid: String): _room_code = oid)
 	Noray.on_connect_nat.connect(_on_noray_connect.bind(false))
 	Noray.on_connect_relay.connect(_on_noray_connect.bind(true))
+	
+	
 	multiplayer.connected_to_server.connect(func(): joined.emit())
 	multiplayer.connection_failed.connect(func(): join_failed.emit("Couldn't connect to the host."))
 	multiplayer.peer_connected.connect(func(_id): status_changed.emit("Friend connected!"))
+	multiplayer.peer_disconnected.connect(func(id): print("[net] peer disconnected: ", id))
+	multiplayer.server_disconnected.connect(func(): print("[net] lost connection to host"))
 
 # Every player (host AND client) must do this once.
 func _register() -> Error:
@@ -44,14 +50,28 @@ func _register() -> Error:
 
 func host() -> void:
 	is_host = true
+
+	if USE_LOCAL_ENET:
+		var local_peer := ENetMultiplayerPeer.new()
+		var local_err := local_peer.create_server(7777)
+		if local_err != OK:
+			join_failed.emit("Couldn't start room.")
+			return
+		multiplayer.multiplayer_peer = local_peer
+		room_ready.emit("local")
+		status_changed.emit("Waiting for a friend to join...")
+		return
+
+	# --- Noray path ---
 	var err: Error = await _register()
 	if err != OK:
 		join_failed.emit("Couldn't reach the Noray server.")
 		return
+
 	var peer := ENetMultiplayerPeer.new()
 	err = peer.create_server(Noray.local_port)
 	if err != OK:
-		join_failed.emit("Couldn't start room.")
+		join_failed.emit("Couldn't start the room.")
 		return
 	multiplayer.multiplayer_peer = peer
 	room_ready.emit(_room_code)
@@ -60,15 +80,26 @@ func host() -> void:
 func join(code: String) -> void:
 	is_host = false
 	_target_oid = code
+
+	if USE_LOCAL_ENET:
+		var local_peer := ENetMultiplayerPeer.new()
+		local_peer.create_client("127.0.0.1", 7777)
+		multiplayer.multiplayer_peer = local_peer
+		status_changed.emit("Connecting...")
+		return
+
+	# --- Noray path ---
 	var err: Error = await _register()
 	if err != OK:
-		join_failed.emit("Couldn't reach the Noray Server.")
+		join_failed.emit("Couldn't reach the Noray server.")
 		return
 	status_changed.emit("Connecting...")
 	Noray.connect_nat(code)
 
 # Noray tells BOTH sides to connect once a join request comes in.
 func _on_noray_connect(adress: String, port: int, is_relay: bool) -> void:
+	print("[net] connecting via ", "RELAY" if is_relay else "NAT")
+	
 	var err: Error
 	if is_host:
 		var host_peer := multiplayer.multiplayer_peer as ENetMultiplayerPeer

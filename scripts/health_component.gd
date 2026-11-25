@@ -20,9 +20,9 @@ func damage(attack: Attack):
 	health -= attack.attack_damage
 
 	if health <= 0.0:
-		die_or_respawn()
+		_die()
 			
-func die_or_respawn():
+func _die():
 	var parent := get_parent()
 	if parent is Player:
 		health = MAX_HEALTH
@@ -30,3 +30,4 @@ func die_or_respawn():
 		player.respawn.rpc_id(parent.get_multiplayer_authority(), Vector3.ZERO)
 	else:
 		parent.queue_free()
+	print("[health] DIE: ", parent.name, "health=", health)
