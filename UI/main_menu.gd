@@ -10,6 +10,7 @@ extends Control
 @onready var status_label: Label = %StatusLabel
 @onready var start_game_btn: Button = %StartGameBtn
 @onready var play_offline_btn: Button = %PlayOfflineBtn
+@onready var timer: Timer = $Timer
 
 func _ready() -> void:
 	host_btn.pressed.connect(_on_host_pressed)
@@ -24,6 +25,8 @@ func _ready() -> void:
 	start_game_btn.hide()
 	start_game_btn.pressed.connect(func(): Network.start_game())
 	multiplayer.peer_connected.connect(_on_peer_connected)
+	timer.start()
+	timer.timeout.connect(_hide_splash_screen)
 	
 	Network.status_changed.connect(func(m: String): status_label.text = m)
 	Network.room_ready.connect(_on_room_ready)
@@ -64,3 +67,6 @@ func _on_join_failed(reason: String) -> void:
 func _on_peer_connected(_id: int) -> void:
 	if multiplayer.is_server():
 		start_game_btn.show()
+
+func _hide_splash_screen() -> void:
+	$SplashScreen.hide()
