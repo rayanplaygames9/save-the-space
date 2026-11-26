@@ -18,6 +18,11 @@ class_name Player
 @export_group("Idle Hover Settings")
 @export var hover_speed := 2.0      # How fast the bobbing cycle goes
 @export var hover_strength := 0.5   # How high/low the character bobs
+@export var username := "":
+	set(value):
+		username = value
+		if is_node_ready():
+			nametag.text = value
 
 @onready var hotbar_ui: HBoxContainer = %HotbarUI
 @onready var healthbar: ProgressBar = %Healthbar
@@ -30,6 +35,7 @@ class_name Player
 @onready var d_45_raycast: RayCast3D = $Head/Camera3D/D45Raycast
 @onready var d_45_sfx: AudioStreamPlayer = $d45sfx
 @onready var axe_sfx: AudioStreamPlayer3D = $AxeSFX
+@onready var nametag: Label3D = %Nametag
 
 var hover_time := 0.0
 var broke_rock := false
@@ -49,6 +55,10 @@ func _ready() -> void:
 		return
 	
 	$Head/Camera3D.current = true
+	nametag.text = username
+	username = Global.player_username
+	nametag.visible = not is_multiplayer_authority()
+	
 	stats = Stats.load_stats()
 	print("Loaded player level: ", stats.level)
 	

@@ -11,6 +11,7 @@ extends Control
 @onready var start_game_btn: Button = %StartGameBtn
 @onready var play_offline_btn: Button = %PlayOfflineBtn
 @onready var timer: Timer = $Timer
+@onready var username_input: LineEdit = %UsernameInput
 
 func _ready() -> void:
 	host_btn.pressed.connect(_on_host_pressed)
@@ -37,15 +38,27 @@ func _on_code_changed(new_text: String) -> void:
 	join_btn.disabled = new_text.strip_edges().is_empty()
 
 func _on_host_pressed() -> void:
+	var username = username_input.text.strip_edges()
+	if username.is_empty():
+		print("You need to type a username!")
+		return
+	Global.player_username = username
 	_set_busy(true, "Creating room...")
 	Network.host()
 
 func _on_join_pressed() -> void:
 	var code = code_input.text.strip_edges()
+	var username = username_input.text.strip_edges()
 	if code.is_empty():
 		return
+	if username.is_empty():
+		print("You need to type a username!")
+		return
+	Global.player_username = username
 	_set_busy(true, "Connecting...")
 	Network.join(code)
+	
+	
 
 func _on_copy_pressed() -> void:
 	DisplayServer.clipboard_set(code_label.text.replace("Room code: ", ""))

@@ -217,6 +217,18 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_ev3b6")
 placeholder_text = "Type code to join here..."
 alignment = 1
 
+[node name="UsernameInput" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=1050481814]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+layout_direction = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_f40uw")
+theme_override_styles/read_only = SubResource("StyleBoxFlat_8ctay")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ev3b6")
+placeholder_text = "Type username here..."
+alignment = 1
+max_length = 16
+
 [node name="JoinBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1591038427]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
@@ -283,6 +295,7 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_7137b")
 text = "Play Offline"
 
 [node name="SplashScreen" type="CenterContainer" parent="." unique_id=1352415943]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
