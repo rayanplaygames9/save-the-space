@@ -3,8 +3,8 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcsacrbw2bso6"
-path.s3tc="res://.godot/imported/sky_space.png-e04db458b81e5e4578687f3129372128.s3tc.ctex"
-path.etc2="res://.godot/imported/sky_space.png-e04db458b81e5e4578687f3129372128.etc2.ctex"
+path.s3tc="res://.godot/imported/sky_space.png-0c1aadd545034ab2ae7f6a040eb9ece0.s3tc.ctex"
+path.etc2="res://.godot/imported/sky_space.png-0c1aadd545034ab2ae7f6a040eb9ece0.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/sky_space.png"
-dest_files=["res://.godot/imported/sky_space.png-e04db458b81e5e4578687f3129372128.s3tc.ctex", "res://.godot/imported/sky_space.png-e04db458b81e5e4578687f3129372128.etc2.ctex"]
+source_file="res://assets/img/sky_space.png"
+dest_files=["res://.godot/imported/sky_space.png-0c1aadd545034ab2ae7f6a040eb9ece0.s3tc.ctex", "res://.godot/imported/sky_space.png-0c1aadd545034ab2ae7f6a040eb9ece0.etc2.ctex"]
 
 [params]
 

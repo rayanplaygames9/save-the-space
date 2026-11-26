@@ -21,6 +21,7 @@ var player: Player
 @onready var players_container: Node3D = $Players
 @onready var rocks_container: Node3D = $Rocks
 @onready var backto_menu_btn: Button = %BacktoMenuBtn
+@onready var aliens_container: Node3D = $Aliens
 
 func _ready() -> void:
 	if multiplayer.is_server():
@@ -35,20 +36,6 @@ func _ready() -> void:
 		print("Back to menu!")
 		Network.leave_game()
 	)
-	
-	for i in range(MAX_ALIENS):
-		var alien = ALIEN.instantiate()
-		alien.visible = false
-		alien.set_physics_process(false)
-		alien.set_process(false)
-		alien.disabled = true
-
-		add_child(alien)
-
-		alien.get_node("CollisionShape3D").disabled = true
-		alien.get_node("HitboxComponent/CollisionShape3D").disabled = true
-
-		aliens.append(alien)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("show_options"):
@@ -86,41 +73,20 @@ func spawn_rock() -> void:
 	rocks_container.add_child(rock, true)
 
 func spawn_alien():
-	var spawned := false
-	
-	for alien in aliens:
-		if not alien.visible:
-			alien.visible = true
-			alien.get_node("ArrivalSFX").play()
+	if not multiplayer.is_server():
+		return  # only the host spawns; clients receive them automatically
 
-			# Re-enable collision if its disabled it on death
-			alien.get_node("HitboxComponent/CollisionShape3D").disabled = false
-			alien.get_node_or_null("CollisionShape3D").disabled = false
+	if aliens_container.get_child_count() >= MAX_ALIENS:
+		print("Max aliens reached (%d). Cannot spawn any more." % MAX_ALIENS)
+		return
 
-			alien.set_physics_process(true)
-			alien.set_process(true)
-
-			alien.disabled = false
-
-			# Reset health if needed via health component reference
-			var health_component: HealthComponent = alien.get_node_or_null("HealthComponent")
-			if health_component: health_component.health = health_component.MAX_HEALTH
-
-			# randomized position variables
-			var rand_x = randf_range(-50.0, 50.0)
-			var rand_y = randf_range(-5.0, 5.0)
-			var rand_z = randf_range(-50.0, 50.0)
-
-			alien.position = Vector3(rand_x, rand_y, rand_z)
-
-			alien.get_node("StartMoveTimer").start()
-
-			spawned = true
-			break # Found one, stop searching!
-
-	# If all 100 rocks are currently visible, 'spawned' stays false and nothing happens
-	if not spawned:
-		print("Max aliens reached (2). Cannot spawn any more.")
+	var alien := ALIEN.instantiate() as Alien
+	alien.position = Vector3(
+		randf_range(-50.0, 50.0),
+		randf_range(-20.0, 20.0),
+		randf_range(-50.0, 50.0)
+	)
+	aliens_container.add_child(alien, true)
 
 func _on_spawn_rock_timer_timeout() -> void:
 	spawn_rock()

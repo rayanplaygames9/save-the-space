@@ -250,7 +250,7 @@ func _server_apply_damage(target_path: NodePath, dmg: float) -> void:
 	var rock_parent := hitbox.get_parent()
 	
 	if health <= 0.0 and rock_parent is GreenRock:
-		var alien = get_tree().current_scene.get_node("Alien")
+		var alien = Global.get_alien()
 		if alien:
 			alien.placed_rocks -= 1
 			
