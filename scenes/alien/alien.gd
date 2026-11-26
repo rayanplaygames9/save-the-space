@@ -29,6 +29,10 @@ var is_dangerous_rain_triggered := false
 
 func _ready() -> void:
 	$ArrivalSFX.play()
+	if multiplayer.is_server():
+		multiplayer.peer_connected.connect(func(id: int) -> void:
+			_set_rocks.rpc_id(id, placed_rocks)
+		)
 
 func _physics_process(delta: float) -> void:
 	if not disabled:
@@ -84,7 +88,7 @@ func _on_stop_vel_timer_timeout() -> void:
 
 		# Only increment and print if place_rock() actually succeeded!
 		if place_rock():
-			placed_rocks += 1
+			register_rock_placed()
 			print("Alien placed rocks: %s" % placed_rocks)
 
 		start_move_timer.start()
@@ -92,19 +96,17 @@ func _on_stop_vel_timer_timeout() -> void:
 func check_rain_trigger() -> void:
 	if not multiplayer.is_server():
 		return
-	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
+	if placed_rocks >= 2 and not is_dangerous_rain_triggered:
 		is_dangerous_rain_triggered = true
 		_spawn_dangerous_object(15.0)
-		print("It's raining dangerous objects!")
 
 
 func _on_rain_d_object_timer_timeout() -> void:
 	if not multiplayer.is_server():
 		return
-	if placed_rocks >= 10:
+	if placed_rocks >= 2:
 		for i in range(50):
 			_spawn_dangerous_object(150.0)
-			print("It's raining dangerous objects!")
 
 func _spawn_dangerous_object(spread: float) -> void:
 	var container := get_tree().current_scene.get_node("DangerousObjects")
@@ -117,3 +119,12 @@ func _spawn_dangerous_object(spread: float) -> void:
 	obj.position = Vector3(0, 15, 0) + random_offset
 	container.add_child(obj, true)  # spawner copies it to clients
 	create_tween().tween_callback(obj.queue_free).set_delay(5.0)  # host frees it, clients follow
+
+func register_rock_placed() -> void:
+	if not multiplayer.is_server():
+		return
+	_set_rocks.rpc(placed_rocks + 1)
+
+@rpc("authority", "call_local", "reliable")
+func _set_rocks(count: int) -> void:
+	placed_rocks = count

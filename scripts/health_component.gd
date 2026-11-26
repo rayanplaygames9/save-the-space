@@ -13,21 +13,33 @@ signal health_changed(new_health: float)
 
 func _ready() -> void:
 	health = MAX_HEALTH
-	
-func damage(attack: Attack):
+	print("[health] ready peer=", multiplayer.get_unique_id(), " owner=", get_parent().name, " health=", health)
+
+func _process(_delta: float) -> void:
+	if Engine.get_frames_drawn() % 60 == 0:
+		print("[health] peer=", multiplayer.get_unique_id(), " ", get_parent().name, " health=", health)
+
+func damage(attack: Attack) -> void:
 	if not multiplayer.is_server():
 		return
-	health -= attack.attack_damage
+	var new_health := health - attack.attack_damage
+	if new_health <= 0.0:
+		_die() # 0 health = dead
+	else:
+		_set_health.rpc(new_health) # damaged
 
-	if health <= 0.0:
-		_die()
-			
-func _die():
+func _die() -> void:
 	var parent := get_parent()
 	if parent is Player:
-		health = MAX_HEALTH
-		var player: Player = parent
-		player.respawn.rpc_id(parent.get_multiplayer_authority(), Vector3.ZERO)
+		_set_health.rpc(MAX_HEALTH) # respawn
+		parent.respawn.rpc_id(parent.get_multiplayer_authority(), Vector3.ZERO)
 	else:
 		parent.queue_free()
-	print("[health] DIE: ", parent.name, "health=", health)
+
+@rpc("any_peer", "call_local", "reliable")
+func _set_health(value: float) -> void:
+	var sender := multiplayer.get_remote_sender_id()
+	if sender != 0 and sender != 1:
+		return  # only the server (or a local call) may set health
+	health = clampf(value, 0.0, MAX_HEALTH)
+	health_changed.emit(health)
