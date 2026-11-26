@@ -320,8 +320,8 @@ value = 100.0
 show_percentage = false
 
 [node name="Label" type="Label" parent="UI" unique_id=865167729]
-offset_left = 78.0
-offset_right = 156.0
+offset_left = 10.0
+offset_right = 87.9997
 offset_bottom = 63.0
 theme_override_font_sizes/font_size = 32
 text = "HP:"
@@ -332,8 +332,8 @@ vertical_alignment = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -592.0
-offset_right = -514.0
+offset_left = -520.0
+offset_right = -442.0
 offset_bottom = 63.0
 grow_horizontal = 0
 theme_override_font_sizes/font_size = 32
@@ -371,10 +371,10 @@ mouse_filter = 2
 
 [node name="VirtualJoystick" type="VirtualJoystick" parent="UI/TouchControls" unique_id=1812870301]
 layout_mode = 0
-offset_left = 237.99998
-offset_top = 377.99997
-offset_right = 278.0
-offset_bottom = 417.99997
+offset_left = 162.0
+offset_top = 294.0
+offset_right = 202.00002
+offset_bottom = 334.0
 scale = Vector2(2.5, 2.5)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 layout_direction = 2
@@ -385,13 +385,13 @@ action_up = &"forward"
 action_down = &"backward"
 
 [node name="UpBtn" type="TouchScreenButton" parent="UI/TouchControls" unique_id=327035323]
-position = Vector2(974, 341)
+position = Vector2(821, 233)
 scale = Vector2(4.2352943, 6.4545455)
 texture_normal = ExtResource("5_75vfm")
 action = "jump"
 
 [node name="DownBtn" type="TouchScreenButton" parent="UI/TouchControls" unique_id=1124086936]
-position = Vector2(754.00006, 354.00003)
+position = Vector2(647.00006, 241)
 scale = Vector2(3.9999993, 5.6363664)
 texture_normal = ExtResource("6_0owmy")
 action = "down_crouch"
@@ -419,9 +419,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -412.00006
+offset_left = -495.00006
 offset_top = -403.00006
-offset_right = 409.99994
+offset_right = 492.99994
 offset_bottom = 261.99994
 grow_horizontal = 2
 grow_vertical = 0

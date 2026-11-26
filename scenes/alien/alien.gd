@@ -27,6 +27,9 @@ static var placed_rocks := 0
 var disabled := false
 var is_dangerous_rain_triggered := false
 
+func _ready() -> void:
+	$ArrivalSFX.play()
+
 func _physics_process(delta: float) -> void:
 	if not disabled:
 		move_and_slide()

@@ -173,14 +173,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+layout_direction = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=553015913]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1000, 500)
 layout_mode = 2
+layout_direction = 2
 
 [node name="Title" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1312751486]
 layout_mode = 2
+layout_direction = 2
 text = "Save the Space"
 label_settings = SubResource("LabelSettings_tapir")
 horizontal_alignment = 1
@@ -190,6 +193,7 @@ vertical_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_p8ccj")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tk8dj")
 theme_override_styles/hover = SubResource("StyleBoxFlat_d8nwk")
@@ -199,12 +203,14 @@ text = "Host Game"
 [node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1833284090]
 unique_name_in_owner = true
 layout_mode = 2
+layout_direction = 2
 theme_override_constants/separation = 25
 
 [node name="CodeInput" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=943971036]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_f40uw")
 theme_override_styles/read_only = SubResource("StyleBoxFlat_8ctay")
 theme_override_styles/focus = SubResource("StyleBoxFlat_ev3b6")
@@ -215,6 +221,7 @@ alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_k0a0m")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_2mudq")
 theme_override_styles/hover = SubResource("StyleBoxFlat_cafmx")
@@ -225,11 +232,13 @@ text = "Join Game"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
+layout_direction = 2
 
 [node name="CodeLabel" type="Label" parent="CenterContainer/VBoxContainer/CodeRow" unique_id=1592782694]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
+layout_direction = 2
 text = "Code: "
 label_settings = SubResource("LabelSettings_mmlvu")
 horizontal_alignment = 1
@@ -239,6 +248,7 @@ vertical_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
+layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_aorne")
 theme_override_styles/hover = SubResource("StyleBoxFlat_bpm4f")
@@ -248,11 +258,13 @@ text = "Copy Code"
 [node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1927141732]
 unique_name_in_owner = true
 layout_mode = 2
+layout_direction = 2
 
 [node name="StartGameBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=239108012]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_aorne")
 theme_override_styles/hover = SubResource("StyleBoxFlat_bpm4f")
@@ -263,6 +275,7 @@ text = "Start Game"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_aorne")
 theme_override_styles/hover = SubResource("StyleBoxFlat_bpm4f")
@@ -274,11 +287,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -201.0
+offset_top = -187.0
+offset_right = 201.0
+offset_bottom = 187.0
 grow_horizontal = 2
 grow_vertical = 2
+layout_direction = 2
 
 [node name="ColorRect" type="ColorRect" parent="SplashScreen" unique_id=89137273]
-custom_minimum_size = Vector2(1000, 500)
+custom_minimum_size = Vector2(1500, 800)
 layout_mode = 2
 color = Color(0, 0, 0, 1)
 
