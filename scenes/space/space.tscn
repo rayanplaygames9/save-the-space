@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://21v0remrmi0u"]
 
-[ext_resource type="Texture2D" uid="uid://dcsacrbw2bso6" path="res://assets/sky_space.png" id="1_2482y"]
+[ext_resource type="Texture2D" uid="uid://dcsacrbw2bso6" path="res://assets/img/sky_space.png" id="1_2482y"]
 [ext_resource type="Script" uid="uid://dj8kvfp3j7x3s" path="res://scripts/space.gd" id="1_x217o"]
 [ext_resource type="PackedScene" uid="uid://b6kljbc0o1l5s" path="res://scenes/player/player.tscn" id="2_ugvpa"]
 [ext_resource type="PackedScene" uid="uid://c26ques8l5dgn" path="res://scenes/space/earth.tscn" id="4_718x5"]
@@ -103,6 +103,10 @@ spawn_path = NodePath("../GreenRocks")
 _spawnable_scenes = PackedStringArray("uid://cts34uc3idrbh")
 spawn_path = NodePath("../DangerousObjects")
 
+[node name="MultiplayerSpawner5" type="MultiplayerSpawner" parent="." unique_id=938454682]
+_spawnable_scenes = PackedStringArray("uid://b242ndeq5lfjs")
+spawn_path = NodePath("../Aliens")
+
 [node name="Rocks" type="Node3D" parent="." unique_id=833937943]
 
 [node name="GreenRocks" type="Node3D" parent="." unique_id=1162869833]
@@ -145,6 +149,8 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_tk8dj")
 theme_override_styles/hover = SubResource("StyleBoxFlat_d8nwk")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_4cwpn")
 text = "Back to menu"
+
+[node name="Aliens" type="Node3D" parent="." unique_id=277587735]
 
 [connection signal="timeout" from="SpawnRockTimer" to="." method="_on_spawn_rock_timer_timeout"]
 [connection signal="timeout" from="SpawnAlienTimer" to="." method="_on_spawn_alien_timer_timeout"]

@@ -26,6 +26,8 @@ Network="*uid://behf3pg3v2ls2"
 
 [display]
 
+window/size/viewport_width=1000
+window/size/viewport_height=500
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
