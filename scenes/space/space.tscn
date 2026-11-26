@@ -76,6 +76,7 @@ wait_time = 3.5
 autostart = true
 
 [node name="SpawnAlienTimer" type="Timer" parent="." unique_id=104891534]
+wait_time = 25.0
 autostart = true
 
 [node name="earth" parent="." unique_id=106238960 instance=ExtResource("4_718x5")]

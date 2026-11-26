@@ -33,7 +33,7 @@ class_name Player
 @onready var maxlevelhit_label: Label = %MAXLEVELHITLabel
 @onready var touch_controls: Control = %TouchControls
 @onready var d_45_raycast: RayCast3D = $Head/Camera3D/D45Raycast
-@onready var d_45_sfx: AudioStreamPlayer = $d45sfx
+@onready var d_45_sfx: AudioStreamPlayer3D = $d45sfx
 @onready var axe_sfx: AudioStreamPlayer3D = $AxeSFX
 @onready var nametag: Label3D = %Nametag
 

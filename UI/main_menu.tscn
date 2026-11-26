@@ -166,18 +166,20 @@ grow_vertical = 2
 script = ExtResource("1_p8ccj")
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=963747207]
-custom_minimum_size = Vector2(1000, 500)
+custom_minimum_size = Vector2(1000, 450)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -19.5
+offset_bottom = 19.5
 grow_horizontal = 2
 grow_vertical = 2
 layout_direction = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=553015913]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(1000, 500)
+custom_minimum_size = Vector2(500, 400)
 layout_mode = 2
 layout_direction = 2
 
@@ -191,7 +193,6 @@ vertical_alignment = 1
 
 [node name="HostBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=851034705]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_p8ccj")
@@ -231,7 +232,6 @@ max_length = 16
 
 [node name="JoinBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1591038427]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_k0a0m")
@@ -274,7 +274,6 @@ layout_direction = 2
 
 [node name="StartGameBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=239108012]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
@@ -285,7 +284,6 @@ text = "Start Game"
 
 [node name="PlayOfflineBtn" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1780945465]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 layout_direction = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_mmlvu")
@@ -295,7 +293,6 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_7137b")
 text = "Play Offline"
 
 [node name="SplashScreen" type="CenterContainer" parent="." unique_id=1352415943]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

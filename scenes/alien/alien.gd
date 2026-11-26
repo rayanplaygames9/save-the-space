@@ -96,7 +96,7 @@ func _on_stop_vel_timer_timeout() -> void:
 func check_rain_trigger() -> void:
 	if not multiplayer.is_server():
 		return
-	if placed_rocks >= 2 and not is_dangerous_rain_triggered:
+	if placed_rocks >= 10 and not is_dangerous_rain_triggered:
 		is_dangerous_rain_triggered = true
 		_spawn_dangerous_object(15.0)
 
@@ -104,9 +104,9 @@ func check_rain_trigger() -> void:
 func _on_rain_d_object_timer_timeout() -> void:
 	if not multiplayer.is_server():
 		return
-	if placed_rocks >= 2:
+	if placed_rocks >= 10:
 		for i in range(50):
-			_spawn_dangerous_object(150.0)
+			_spawn_dangerous_object(500.0)
 
 func _spawn_dangerous_object(spread: float) -> void:
 	var container := get_tree().current_scene.get_node("DangerousObjects")

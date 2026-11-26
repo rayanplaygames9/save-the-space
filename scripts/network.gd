@@ -5,7 +5,7 @@ signal room_ready(code: String)
 signal join_failed(reason: String)
 signal joined()
 
-const USE_LOCAL_ENET := true  # false = use Noray (room codes), true = local testing only
+const USE_LOCAL_ENET := false  # false = use Noray (room codes), true = local testing only
 
 # Check the netfox docs for the current public test instance.
 const NORAY_HOST := "tomfol.io"
