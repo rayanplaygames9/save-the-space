@@ -290,6 +290,8 @@ modulate = Color(1, 1, 1, 0)
 position = Vector2(564, 314.00003)
 position = Vector2(493.00006, 239)
 scale = Vector2(0.46624994, 0.4288889)
+position = Vector2(502.99994, 250)
+scale = Vector2(0.34500003, 0.33999994)
 texture = ExtResource("2_tk8dj")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1874803143]
