@@ -13,11 +13,6 @@ signal health_changed(new_health: float)
 
 func _ready() -> void:
 	health = MAX_HEALTH
-	print("[health] ready peer=", multiplayer.get_unique_id(), " owner=", get_parent().name, " health=", health)
-
-func _process(_delta: float) -> void:
-	if Engine.get_frames_drawn() % 60 == 0:
-		print("[health] peer=", multiplayer.get_unique_id(), " ", get_parent().name, " health=", health)
 
 func damage(attack: Attack) -> void:
 	if not multiplayer.is_server():
