@@ -38,7 +38,6 @@ class_name Player
 @onready var nametag: Label3D = %Nametag
 
 var hover_time := 0.0
-var broke_rock := false
 var max_popup_triggered := false
 var current_hotbar_index := 0
 
@@ -148,10 +147,6 @@ func _physics_process(delta: float) -> void:
 		hotbar_ui.get_node("Slot1").modulate = Color(1, 1, 1, 0.5)
 		hotbar_ui.get_node("Slot2").modulate = Color(1, 1, 1, 0.5)
 
-	if broke_rock:
-		handle_levelup()
-		broke_rock = false
-
 func _hit_with_axe():
 	_play_attack.rpc("hit_axe")
 
@@ -201,11 +196,13 @@ func _hit_with_d45():
 		hit_rock.get_node("SelfSFX").play()
 
 func handle_levelup():
+	print("[handle_levelup func] this func is being called")
 	# If we are already maxed out, don't try to level up further
 	if stats.level >= stats.MAX_LEVEL:
 		return
 	
 	stats.level += 1.0
+	print("leveld up")
 	stats.save()
 	levelbar.value = stats.level
 	print("level up %s" % stats.level)
@@ -234,14 +231,20 @@ func respawn(pos: Vector3) -> void:
 # Called by both weapons after a raycast hit (raycast stays on the client).
 func _deal_damage(target: Node, dmg: float) -> void:
 	if multiplayer.is_server():
+		print("applying _server_damage")
 		_server_apply_damage(target.get_path(), dmg)
+		print("applyed _server_damage")
 	else:
+		print("requesting _request_damage")
 		_request_damage.rpc_id(1, target.get_path(), dmg)
+		print("requested _request_damage")
 
 # Client -> host. "authority" works because the sender owns this Player node.
 @rpc("authority", "call_remote", "reliable")
 func _request_damage(target_path: NodePath, dmg: float) -> void:
+	print("[_request_damage] this func is being called")
 	_server_apply_damage(target_path, dmg)
+	print("[_request_damage] applyed _server_damage")
 
 # Runs on the host only.
 func _server_apply_damage(target_path: NodePath, dmg: float) -> void:
@@ -251,23 +254,24 @@ func _server_apply_damage(target_path: NodePath, dmg: float) -> void:
 	var hitbox: HitboxComponent = target.get_node_or_null("HitboxComponent")
 	if hitbox == null:
 		return
-		
+
 	var attack := Attack.new()
 	attack.attack_damage = dmg
-	hitbox.damage(attack)
-	
-	var health := hitbox.health_component.health
+
 	var rock_parent := hitbox.get_parent()
-	
-	if health <= 0.0 and rock_parent is GreenRock:
+	var killed := hitbox.damage(attack)   # only ONE call
+
+	if not killed:
+		return
+
+	if rock_parent is GreenRock:
 		var alien = Global.get_alien()
 		if alien:
 			alien.placed_rocks -= 1
-			
-	if health <= 0.0 and (rock_parent is GreenRock or rock_parent is NormalRock):
-		# tell the player who broke it, so THEY level up
+
+	if rock_parent is GreenRock or rock_parent is NormalRock:
 		if get_multiplayer_authority() == multiplayer.get_unique_id():
-			broke_rock = true
+			handle_levelup()
 		else:
 			_rock_broken.rpc_id(get_multiplayer_authority())
 
@@ -276,7 +280,7 @@ func _server_apply_damage(target_path: NodePath, dmg: float) -> void:
 func _rock_broken() -> void:
 	if multiplayer.get_remote_sender_id() != 1:
 		return # only the host can tell us
-	broke_rock = true
+	handle_levelup()
 
 @rpc("authority", "call_local", "reliable")
 func _equip(index: int) -> void:

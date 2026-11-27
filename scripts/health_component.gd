@@ -14,14 +14,15 @@ signal health_changed(new_health: float)
 func _ready() -> void:
 	health = MAX_HEALTH
 
-func damage(attack: Attack) -> void:
+func damage(attack: Attack) -> bool:   # returns true if this hit killed it
 	if not multiplayer.is_server():
-		return
+		return false
 	var new_health := health - attack.attack_damage
 	if new_health <= 0.0:
-		_die() # 0 health = dead
-	else:
-		_set_health.rpc(new_health) # damaged
+		_die()
+		return true
+	_set_health.rpc(new_health)
+	return false
 
 func _die() -> void:
 	var parent := get_parent()
