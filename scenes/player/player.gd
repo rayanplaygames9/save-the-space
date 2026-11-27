@@ -52,11 +52,11 @@ func _ready() -> void:
 		$UI.hide()
 		$Head/Camera3D.current = false  # remote players must never take over your view
 		return
-	
+
 	$Head/Camera3D.current = true
 	nametag.text = username
 	username = Global.player_username
-	nametag.visible = not is_multiplayer_authority()
+	_play_idle_anim()
 	
 	stats = Stats.load_stats()
 	print("Loaded player level: ", stats.level)
@@ -81,6 +81,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not is_multiplayer_authority(): return
 	
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		rotate_y(-event.relative.x * mouse_sensitivity)
+		head.rotate_x(-event.relative.y * mouse_sensitivity)
+		head.rotation.x = clamp(head.rotation.x, -PI/2, PI/2)
+	
+	if event is InputEventScreenDrag:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
 		head.rotation.x = clamp(head.rotation.x, -PI/2, PI/2)
@@ -118,11 +123,13 @@ func _physics_process(delta: float) -> void:
 	# hotbar 1 (axe)
 	if Input.is_action_just_pressed("hotbar_1") and current_hotbar_index != 0:
 		_equip.rpc(0)
+		$Head/Camera3D.position = Vector3(0.0, 0.442, 3.193)
 	
 	# hotbar 2 (d-45)
 	if Input.is_action_just_pressed("hotbar_2") and current_hotbar_index != 1:
 		_equip.rpc(1)
-			
+		$Head/Camera3D.position = Vector3(2.666, 0.442, 3.193)
+
 	# hotbar 3
 	# its empty so well just do nothing
 	# 2 hotbars is good
@@ -133,14 +140,12 @@ func _physics_process(delta: float) -> void:
 		hotbar_ui.get_node("Slot1").modulate = Color(1, 1, 1, 1.0)
 		hotbar_ui.get_node("Slot2").modulate = Color(1, 1, 1, 0.5)
 		if Input.is_action_pressed("left_mouse") and not anim_player.is_playing():
-			print("hit with axe")
 			_hit_with_axe()
 
 	elif current_hotbar_index == 1:
 		hotbar_ui.get_node("Slot1").modulate = Color(1, 1, 1, 0.5)
 		hotbar_ui.get_node("Slot2").modulate = Color(1, 1, 1, 1.0)
 		if Input.is_action_just_pressed("left_mouse"):
-			print("hit with d45")
 			_hit_with_d45()
 
 	else:
@@ -178,25 +183,24 @@ func _hit_with_d45():
 	attack_damage = 100.0
 	
 	if not d_45_raycast.is_colliding():
+		push_error("d45_raycast not colliding")
 		return
 
 	var hit_rock = d_45_raycast.get_collider()
-	if not hit_rock:
-		push_error("hit rock not found")
+	if not (hit_rock is GreenRock or hit_rock is NormalRock):
+		push_error("d45_raycast hit smth that isn't a rock.")
 		return
 
-	var ht_hitbox_component: HitboxComponent = hit_rock.get_node_or_null("HitboxComponent")
+	print("hit rock found")
+	var ht_hitbox_component: HitboxComponent = hit_rock.get_node("HitboxComponent")
 	if not ht_hitbox_component:
 		push_error("ht_hitbox_component not found!")
 		return
 
 	_deal_damage(hit_rock, attack_damage)
-		
-	if hit_rock is GreenRock or hit_rock is NormalRock:
-		hit_rock.get_node("SelfSFX").play()
+	hit_rock.get_node("SelfSFX").play()
 
 func handle_levelup():
-	print("[handle_levelup func] this func is being called")
 	# If we are already maxed out, don't try to level up further
 	if stats.level >= stats.MAX_LEVEL:
 		return
@@ -231,13 +235,9 @@ func respawn(pos: Vector3) -> void:
 # Called by both weapons after a raycast hit (raycast stays on the client).
 func _deal_damage(target: Node, dmg: float) -> void:
 	if multiplayer.is_server():
-		print("applying _server_damage")
 		_server_apply_damage(target.get_path(), dmg)
-		print("applyed _server_damage")
 	else:
-		print("requesting _request_damage")
 		_request_damage.rpc_id(1, target.get_path(), dmg)
-		print("requested _request_damage")
 
 # Client -> host. "authority" works because the sender owns this Player node.
 @rpc("authority", "call_remote", "reliable")
@@ -297,6 +297,10 @@ func _play_attack(anim_name: String) -> void:
 		axe_sfx.play()
 	else:
 		d_45_sfx.play()
+
+@rpc("authority", "call_local", "reliable")
+func _play_idle_anim(anim_name: String = "self_idle") -> void:
+	anim_player.play(anim_name)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
